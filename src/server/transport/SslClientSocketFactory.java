@@ -42,8 +42,7 @@ public class SslClientSocketFactory implements RMIClientSocketFactory, Serializa
 
     @Override
     public Socket createSocket(String host, int port) throws IOException {
-        SSLSocket sslSock = (SSLSocket) sf.createSocket(host, port);
-        return sslSock;
+        return sf.createSocket(host, port);
     }
 
 }

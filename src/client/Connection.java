@@ -11,6 +11,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.RMIClientSocketFactory;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -22,45 +23,24 @@ public class Connection<T> {
     private T s;
     private static int NUM_OF_RETRIES = 10;
 
-    private boolean createConnection(){
+    private boolean createConnection(RMIClientSocketFactory csf){
         try {
-            SslClientSocketFactory csf = new SslClientSocketFactory("client", "clientpw");
             Registry registry = LocateRegistry.getRegistry(Server.domain, Server.port, csf);
 
             s = (T) registry.lookup(Server.url);
             return true;
-        } catch (NotBoundException e) {
+        } catch (Exception e) {
             System.err.println("Failed to bound to the server.");
             // e.printStackTrace();
-        } catch (MalformedURLException e) {
-            System.err.println("Malformed URL.");
-            // e.printStackTrace();
-        } catch (RemoteException e) {
-            System.err.println("Server failed to start.");
-           // e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (UnrecoverableKeyException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return false;
     }
 
-    public boolean connect(){
+    public boolean connect(RMIClientSocketFactory csf){
         if(!isConnected()){
             int count = 0;
 
-            while (!createConnection()){
+            while (!createConnection(csf)){
                 System.out.println("try to connect... (" + count + ")");
                 count++;
 

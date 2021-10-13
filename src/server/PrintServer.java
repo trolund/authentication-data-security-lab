@@ -4,10 +4,9 @@ import shared.Credentials;
 import shared.IPrintServer;
 
 import java.rmi.RemoteException;
-import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 
-public class PrintServer extends UnicastRemoteObject implements IPrintServer {
+public class PrintServer implements IPrintServer {
 
     protected PrintServer() throws RemoteException {
     }
