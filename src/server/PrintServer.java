@@ -1,6 +1,7 @@
 package server;
 
 import shared.Credentials;
+import shared.IPrintServer;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;

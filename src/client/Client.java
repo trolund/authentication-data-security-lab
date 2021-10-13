@@ -1,7 +1,6 @@
 package client;
 
-import server.IPrintServer;
-import shared.Colors;
+import shared.IPrintServer;
 import shared.Credentials;
 
 
