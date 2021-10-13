@@ -17,13 +17,13 @@ public class Connection<T> {
             s = (T) Naming.lookup(Server.url);
             return true;
         } catch (NotBoundException e) {
-            System.out.println("Failed to bound to the server.");
+            System.err.println("Failed to bound to the server.");
             // e.printStackTrace();
         } catch (MalformedURLException e) {
-            System.out.println("Malformed URL.");
+            System.err.println("Malformed URL.");
             // e.printStackTrace();
         } catch (RemoteException e) {
-            System.out.println("Server failed to start.");
+            System.err.println("Server failed to start.");
            // e.printStackTrace();
         }
         return false;
