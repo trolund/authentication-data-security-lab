@@ -1,5 +1,6 @@
 package client;
 
+import shared.DataPacked;
 import shared.IPrintServer;
 import shared.Credentials;
 
@@ -22,6 +23,8 @@ public class Client {
             return;
         }
 
+        ps.start();
+
         System.out.println("Print-server login: ");
         while (!login()){
             System.err.println("Password or username was wrong.");
@@ -38,7 +41,7 @@ public class Client {
 
         String token = null;
         try {
-            token = ps.login(c);
+            token = ps.login(new DataPacked(c));
         } catch (RemoteException e) {
             e.printStackTrace();
         }

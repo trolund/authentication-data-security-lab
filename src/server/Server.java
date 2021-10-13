@@ -1,5 +1,6 @@
 package server;
 
+
 import server.transport.SslClientSocketFactory;
 import server.transport.SslServerSocketFactory;
 import shared.Colors;
@@ -24,7 +25,9 @@ public class Server {
         IPrintServer s = new PrintServer();
 
         registry.rebind(url, s);
+
         System.out.print(Colors.ANSI_GREEN + "print-server started on : " + Colors.ANSI_RESET);
         System.out.print(Colors.ANSI_BLUE + url + Colors.ANSI_RESET);
+        System.out.println();
     }
 }
