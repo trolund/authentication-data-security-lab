@@ -1,11 +1,14 @@
 package server;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import javassist.NotFoundException;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
 import server.data.HibernateUtil;
 import server.data.models.Job;
 import server.data.models.User;
+import server.services.PasswordService;
+import server.services.SeedingService;
 import server.services.TokenService;
 import shared.Credentials;
 import shared.DataPacked;
@@ -22,10 +25,15 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
 
     private Session session;
     private TokenService tokenService;
+    private PasswordService passwordService;
 
     protected PrintServer() throws RemoteException {
         tokenService = new TokenService();
         session = HibernateUtil.getSessionFactory().openSession();
+
+        // seeding user data
+        SeedingService seedingService = new SeedingService();
+        seedingService.createMockUsers();
     }
 
     @Override
@@ -122,9 +130,24 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
     }
 
     @Override
-    public synchronized String login(DataPacked<Credentials> params) {
+    public synchronized String login(DataPacked<Credentials> params) throws NotFoundException, Unauthorized {
         try {
-            return tokenService.createJWT(params.getPayload().getUsername());
+            String hql = "SELECT U.email FROM User U WHERE U.email = '" + params.getPayload().getUsername() + "'";
+
+            Query<User> query = session.createQuery(hql);
+            User user = query.getSingleResult();
+
+            if(user != null){
+                if(passwordService.correctPassword(params.getPayload().getPassword(), user.getPassword())){
+                    return tokenService.createJWT(params.getPayload().getUsername());
+                }
+                else{
+                    throw new Unauthorized("Password was incorrect.");
+                }
+            }else{
+                throw new NotFoundException("The user does not exist in the system.");
+            }
+
         } catch (JWTVerificationException e) {
             e.printStackTrace();
         }

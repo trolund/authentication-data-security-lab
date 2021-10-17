@@ -1,8 +1,10 @@
 package shared;
 
+import javassist.NotFoundException;
 import server.data.models.Job;
 import shared.Credentials;
 import shared.dto.*;
+import shared.exceptions.Unauthorized;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ public interface IPrintServer extends java.rmi.Remote {
     void status(DataPacked<StatusParams> params) throws RemoteException;  // prints status of printer on the user's display
     void readConfig(DataPacked<StatusParams> params) throws RemoteException;   // prints the value of the parameter on the user's display
     void setConfig(DataPacked<SetConfigParams> params) throws RemoteException; // sets the parameter to value
-    String login(DataPacked<Credentials> params) throws RemoteException; // use username and password to obtain token.
+    String login(DataPacked<Credentials> params) throws RemoteException, NotFoundException, Unauthorized; // use username and password to obtain token.
     void logout(DataPacked<Object> params) throws RemoteException; // use token to signout.
 
 }

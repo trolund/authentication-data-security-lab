@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import server.services.interfaces.ITokenService;
 import shared.exceptions.Unauthorized;
 
 public class TokenService implements ITokenService {
@@ -15,10 +16,16 @@ public class TokenService implements ITokenService {
 
    public String createJWT(String email) throws JWTVerificationException {
        Algorithm algorithm = Algorithm.HMAC256(secret);
-       String token = JWT.create()
+       String token;
+       try {
+           token = JWT.create()
                    .withIssuer(Issuer)
                    .withClaim("Email", email)
                    .sign(algorithm);
+       }catch (Exception e){
+           System.out.println("Failed to created token for user: " + email);
+           return null;
+       }
 
        System.out.println("Created token to user: " + email);
 

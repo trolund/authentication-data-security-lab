@@ -15,10 +15,17 @@ public class User implements Serializable {
 
     private static final long serialVersionUID = -1798070786993154676L;
 
+    public User(String email, String firstName, String lastName, String password) {
+        this.email = email;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", unique = true, nullable = false)
-    private Integer employeeId;
+    private Integer userId;
 
     @Column(name = "EMAIL", unique = true, nullable = false, length = 100)
     private String email;
@@ -32,12 +39,20 @@ public class User implements Serializable {
     @Column(name = "PASSWORD", unique = false, nullable = false, length = 200)
     private String password;
 
-    public Integer getEmployeeId() {
-        return employeeId;
+    public Integer getUserId() {
+        return userId;
     }
 
-    public void setEmployeeId(Integer employeeId) {
-        this.employeeId = employeeId;
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getEmail() {
@@ -67,7 +82,7 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "EmployeeEntity{" +
-                "employeeId=" + employeeId +
+                "userId=" + userId +
                 ", email='" + email + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +

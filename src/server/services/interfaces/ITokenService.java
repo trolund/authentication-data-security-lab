@@ -1,4 +1,4 @@
-package server.services;
+package server.services.interfaces;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import shared.exceptions.Unauthorized;

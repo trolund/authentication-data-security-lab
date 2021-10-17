@@ -6,6 +6,7 @@ import server.transport.SslServerSocketFactory;
 import shared.Colors;
 import shared.IPrintServer;
 
+import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
@@ -25,6 +26,7 @@ public class Server {
         IPrintServer s = new PrintServer();
 
         registry.rebind(url, s);
+        //Naming.bind(url, s);
 
         System.out.print(Colors.ANSI_GREEN + "print-server started on : " + Colors.ANSI_RESET);
         System.out.print(Colors.ANSI_BLUE + url + Colors.ANSI_RESET);

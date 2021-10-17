@@ -1,5 +1,7 @@
 package client;
 
+import javassist.NotFoundException;
+import shared.Colors;
 import shared.DataPacked;
 import shared.IPrintServer;
 import shared.Credentials;
@@ -23,8 +25,6 @@ public class Client {
             return;
         }
 
-        ps.start();
-
         System.out.println("Print-server login: ");
         while (!login()){
             System.err.println("Password or username was wrong.");
@@ -36,14 +36,16 @@ public class Client {
 
         Credentials c = new Credentials();
 
-        System.err.print("Username: "); c.setUsername(input.nextLine());
-        System.err.print("Password: "); c.setPassword(input.nextLine());
+        System.out.print(Colors.ANSI_BLUE + "email: " + Colors.ANSI_RESET); c.setUsername(input.nextLine());
+        System.out.print(Colors.ANSI_BLUE + "Password: " + Colors.ANSI_RESET); c.setPassword(input.nextLine());
 
         String token = null;
         try {
             token = ps.login(new DataPacked(c));
         } catch (RemoteException e) {
-            e.printStackTrace();
+            System.err.println("Connection failed");
+        } catch (NotFoundException e){
+            System.err.println("there is no user with that email in the system.");
         }
 
         return token != null;
