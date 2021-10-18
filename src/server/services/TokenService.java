@@ -9,6 +9,8 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import server.services.interfaces.ITokenService;
 import shared.exceptions.Unauthorized;
 
+import java.util.HashMap;
+
 public class TokenService implements ITokenService {
 
     private String secret = "secret";

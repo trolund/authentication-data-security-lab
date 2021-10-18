@@ -5,6 +5,7 @@ import shared.Colors;
 import shared.DataPacked;
 import shared.IPrintServer;
 import shared.Credentials;
+import shared.exceptions.Unauthorized;
 
 
 import java.rmi.RemoteException;
@@ -26,9 +27,7 @@ public class Client {
         }
 
         System.out.println("Print-server login: ");
-        while (!login()){
-            System.err.println("Password or username was wrong.");
-        }
+        while (!login());
     }
 
     private static boolean login(){
@@ -39,16 +38,20 @@ public class Client {
         System.out.print(Colors.ANSI_BLUE + "email: " + Colors.ANSI_RESET); c.setUsername(input.nextLine());
         System.out.print(Colors.ANSI_BLUE + "Password: " + Colors.ANSI_RESET); c.setPassword(input.nextLine());
 
-        String token = null;
+        int sessionID = -1;
         try {
-            token = ps.login(new DataPacked(c));
+            sessionID = ps.login(new DataPacked(c));
+            System.out.println();
         } catch (RemoteException e) {
-            System.err.println("Connection failed");
+
+            System.err.println("Connection failed.. RMI..........");
         } catch (NotFoundException e){
-            System.err.println("there is no user with that email in the system.");
+            System.err.println("there is no user with that email in the system. maybe the username was wrong?");
+        } catch (Unauthorized e){
+            System.err.println("Password was wrong.");
         }
 
-        return token != null;
+        return sessionID != -1;
     }
 
     public static void logStatus(IPrintServer ps) throws RemoteException {

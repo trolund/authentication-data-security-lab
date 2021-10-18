@@ -15,5 +15,6 @@
         <!-- all models -->
         <mapping class="server.data.models.User"></mapping>
         <mapping class="server.data.models.Job"></mapping>
+        <mapping class="server.data.models.Session"></mapping>
     </session-factory>
 </hibernate-configuration>

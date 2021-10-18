@@ -2,7 +2,7 @@ package server.services;
 
 import org.hibernate.Session;
 import org.hibernate.query.Query;
-import server.data.HibernateUtil;
+import server.data.utils.HibernateUtil;
 import server.data.models.User;
 import server.services.interfaces.ISeedingService;
 

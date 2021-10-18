@@ -7,17 +7,17 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "Job", uniqueConstraints = { @UniqueConstraint(columnNames = "ID") })
-public class Job implements Serializable {
+public class Job extends BaseEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", unique = true, nullable = false)
     private Integer employeeId;
 
-    @Column(name = "FILE_NAME", unique = true, nullable = false, length = 100)
+    @Column(name = "FileName", unique = true, nullable = false, length = 100)
     private String fileName;
 
-    @Column(name = "PRINTER", unique = false, nullable = false, length = 100)
+    @Column(name = "Printer", unique = false, nullable = false, length = 100)
     private String printer;
 
 }

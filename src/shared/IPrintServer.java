@@ -20,7 +20,7 @@ public interface IPrintServer extends java.rmi.Remote {
     void status(DataPacked<StatusParams> params) throws RemoteException;  // prints status of printer on the user's display
     void readConfig(DataPacked<StatusParams> params) throws RemoteException;   // prints the value of the parameter on the user's display
     void setConfig(DataPacked<SetConfigParams> params) throws RemoteException; // sets the parameter to value
-    String login(DataPacked<Credentials> params) throws RemoteException, NotFoundException, Unauthorized; // use username and password to obtain token.
+    int login(DataPacked<Credentials> params) throws RemoteException, NotFoundException, Unauthorized; // use username and password to obtain token.
     void logout(DataPacked<Object> params) throws RemoteException; // use token to signout.
 
 }

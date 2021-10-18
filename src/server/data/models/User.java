@@ -11,15 +11,18 @@ import java.io.Serializable;
 @Table(name = "User", uniqueConstraints = {
         @UniqueConstraint(columnNames = "ID"),
         @UniqueConstraint(columnNames = "EMAIL") })
-public class User implements Serializable {
+public class User extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = -1798070786993154676L;
 
-    public User(String email, String firstName, String lastName, String password) {
+    public User() {
+    }
+
+    public User(String email, String firstName, String lastName, String hashedPassword) {
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.password = password;
+        this.password = hashedPassword;
     }
 
     @Id
@@ -27,16 +30,16 @@ public class User implements Serializable {
     @Column(name = "ID", unique = true, nullable = false)
     private Integer userId;
 
-    @Column(name = "EMAIL", unique = true, nullable = false, length = 100)
+    @Column(name = "Email", unique = true, nullable = false, length = 100)
     private String email;
 
-    @Column(name = "FIRST_NAME", unique = false, nullable = false, length = 100)
+    @Column(name = "FirstName", unique = false, nullable = false, length = 100)
     private String firstName;
 
-    @Column(name = "LAST_NAME", unique = false, nullable = false, length = 100)
+    @Column(name = "LastName", unique = false, nullable = false, length = 100)
     private String lastName;
 
-    @Column(name = "PASSWORD", unique = false, nullable = false, length = 200)
+    @Column(name = "Password", unique = false, nullable = false, length = 200)
     private String password;
 
     public Integer getUserId() {

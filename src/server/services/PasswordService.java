@@ -1,14 +1,17 @@
 package server.services;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import server.services.interfaces.IPasswordService;
 
-public class PasswordService {
+public class PasswordService implements IPasswordService {
 
-    public String hashPassword(String plain_password){
-        return BCrypt.hashpw(plain_password, BCrypt.gensalt());
+    @Override
+    public String hashPassword(String plainPassword){
+        return BCrypt.hashpw(plainPassword, BCrypt.gensalt());
     }
 
-    public boolean correctPassword(String candidate_password, String stored_hash){
-        return BCrypt.checkpw(candidate_password, stored_hash);
+    @Override
+    public boolean correctPassword(String candidate_password, String storedHash){
+        return BCrypt.checkpw(candidate_password, storedHash);
     }
 }
