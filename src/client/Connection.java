@@ -11,6 +11,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.rmi.server.RMIClientSocketFactory;
 import java.security.KeyManagementException;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
@@ -22,68 +23,59 @@ public class Connection<T> {
     private T s;
     private static int NUM_OF_RETRIES = 10;
 
-    private boolean createConnection(){
+    private synchronized boolean createConnection(RMIClientSocketFactory factory){
         try {
-            SslClientSocketFactory csf = new SslClientSocketFactory("client", "clientpw");
-            Registry registry = LocateRegistry.getRegistry(Server.domain, Server.port, csf);
+
+            Registry registry = LocateRegistry.getRegistry(Server.domain, Server.port, factory);
 
             s = (T) registry.lookup(Server.url);
             return true;
         } catch (NotBoundException e) {
             System.err.println("Failed to bound to the server.");
             // e.printStackTrace();
-        } catch (MalformedURLException e) {
-            System.err.println("Malformed URL.");
-            // e.printStackTrace();
         } catch (RemoteException e) {
-            System.err.println("Server failed to start.");
+            System.err.println("Client failed to connect.");
            // e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (KeyManagementException e) {
-            e.printStackTrace();
-        } catch (CertificateException e) {
-            e.printStackTrace();
-        } catch (KeyStoreException e) {
-            e.printStackTrace();
-        } catch (UnrecoverableKeyException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
         return false;
     }
 
-    public boolean connect(){
-        if(!isConnected()){
-            int count = 0;
+    public synchronized boolean connect(){
+        try {
+            if (!isConnected()) {
+                int count = 0;
 
-            while (!createConnection()){
-                System.out.println("try to connect... (" + count + ")");
-                count++;
+                SslClientSocketFactory csf = new SslClientSocketFactory("client", "clientpw");
 
-                if(count >= NUM_OF_RETRIES){
-                    break;
+                while (!createConnection(csf)) {
+                    System.out.println("try to connect... (" + count + ")");
+                    count++;
+
+                    if (count >= NUM_OF_RETRIES) {
+                        break;
+                    }
                 }
+
+                if (count == NUM_OF_RETRIES) {
+                    System.out.println("Make sure that the server have been started.");
+                }
+            } else {
+                System.out.println("Connection is already active.");
             }
 
-            if(count == NUM_OF_RETRIES){
-                System.out.println("Make sure that the server have been started.");
-            }
-        }else{
-            System.out.println("Connection is already active.");
+            return isConnected();
+        }catch (Exception e){
+            return false;
         }
-
-        return isConnected();
     }
 
-    public boolean isConnected(){
+    public synchronized boolean isConnected(){
         return s != null;
     }
 
-    public T getConnection(){
+    public synchronized T getConnection(){
         return s;
     }
 

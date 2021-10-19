@@ -4,6 +4,7 @@ package server;
 import server.transport.SslClientSocketFactory;
 import server.transport.SslServerSocketFactory;
 import shared.Colors;
+import shared.DataPacked;
 import shared.IPrintServer;
 
 import java.rmi.Naming;
@@ -18,15 +19,17 @@ public class Server {
     public static String url = "rmi://" + domain + ":" + port + "/" + serviceName;
 
     public static void main(String[] arg) throws Exception {
+        // Secure channel Factories
         SslClientSocketFactory csf = new SslClientSocketFactory("client", "clientpw");
         SslServerSocketFactory ssf = new SslServerSocketFactory("registry", "registrypw");
 
         Registry registry = LocateRegistry.createRegistry(port, csf, ssf);
 
-        IPrintServer s = new PrintServer();
+        // Service with authentication middelware.
+        IPrintServer service = AuthMiddelware.newInstance(new PrintServer());
 
-        registry.rebind(url, s);
-        //Naming.bind(url, s);
+        // bind service
+        registry.rebind(url, service);
 
         System.out.print(Colors.ANSI_GREEN + "print-server started on : " + Colors.ANSI_RESET);
         System.out.print(Colors.ANSI_BLUE + url + Colors.ANSI_RESET);

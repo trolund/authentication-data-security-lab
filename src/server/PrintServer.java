@@ -47,95 +47,47 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
 
     @Override
     public synchronized void print(DataPacked<PrintParams> params) {
-        try {
-            tokenService.verifyTokenThrowOnInvalid(params.getToken());
-
-            System.out.println("The file': " + params.getPayload().getFilename() + " is being printed on: " + params.getPayload().getPrinter());
-        } catch (Unauthorized unauthorized) {
-            unauthorized.printStackTrace();
-        }
+        System.out.println("The file': " + params.getPayload().getFilename() + " is being printed on: " + params.getPayload().getPrinter());
     }
 
     @Override
     public synchronized ArrayList<Job> queue(DataPacked<QueueParams> params) {
-        try {
-            tokenService.verifyTokenThrowOnInvalid(params.getToken());
-
-            return new ArrayList<>();
-        } catch (Unauthorized unauthorized) {
-            unauthorized.printStackTrace();
-            return null;
-        }
+        return new ArrayList<>();
     }
 
     @Override
     public synchronized void topQueue(DataPacked<TopQueueParams> params) {
-        try {
-            tokenService.verifyTokenThrowOnInvalid(params.getToken());
 
-        } catch (Unauthorized unauthorized) {
-            unauthorized.printStackTrace();
-        }
     }
 
     @Override
     public synchronized void start(DataPacked<Object> params) {
-        try {
-            tokenService.verifyTokenThrowOnInvalid(params.getToken());
 
-        } catch (Unauthorized unauthorized) {
-            unauthorized.printStackTrace();
-        }
     }
 
     @Override
     public synchronized void stop(DataPacked<Object> params) {
-        try {
-            tokenService.verifyTokenThrowOnInvalid(params.getToken());
 
-        } catch (Unauthorized unauthorized) {
-            unauthorized.printStackTrace();
-        }
     }
 
     @Override
     public synchronized void restart(DataPacked<Object> params) {
-        try {
-            tokenService.verifyTokenThrowOnInvalid(params.getToken());
 
-        } catch (Unauthorized unauthorized) {
-            unauthorized.printStackTrace();
-        }
     }
 
     @Override
     public synchronized void status(DataPacked<StatusParams> params) {
-        try {
-            tokenService.verifyTokenThrowOnInvalid(params.getToken());
 
-        } catch (Unauthorized unauthorized) {
-            unauthorized.printStackTrace();
-        }
     }
 
     @Override
     public synchronized void readConfig(DataPacked<StatusParams> params) {
-        try {
-            tokenService.verifyTokenThrowOnInvalid(params.getToken());
 
-        } catch (Unauthorized unauthorized) {
-            unauthorized.printStackTrace();
-        }
     }
 
     @Override
     public synchronized void setConfig(DataPacked<SetConfigParams> params) {
-        try {
-            tokenService.verifyTokenThrowOnInvalid(params.getToken());
 
-        } catch (Unauthorized unauthorized) {
-            unauthorized.printStackTrace();
-        }
     }
 
     @Override

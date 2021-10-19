@@ -8,9 +8,10 @@ import server.data.models.User;
 import server.data.utils.HibernateUtil;
 
 import javax.persistence.NoResultException;
+import java.io.Serializable;
 import java.util.Date;
 
-public class SessionService implements ISessionService {
+public class SessionService implements ISessionService, Serializable {
 
     public int addSession(User user){
         Session session = HibernateUtil.getSessionFactory().openSession();

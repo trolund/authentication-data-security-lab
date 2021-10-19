@@ -2,12 +2,12 @@ package shared;
 
 import java.io.Serializable;
 
-public class DataPacked<T> implements Serializable {
+public class DataPacked<T> implements Serializable, IAuth {
 
-    private String token;
+    private int token;
     private T payload;
 
-    public DataPacked(String token, T payload) {
+    public DataPacked(int token, T payload) {
         this.token = token;
         this.payload = payload;
     }
@@ -16,16 +16,17 @@ public class DataPacked<T> implements Serializable {
         this.payload = payload;
     }
 
-    public DataPacked(String token) {
+    public DataPacked(int token) {
         this.token = token;
         this.payload = null;
     }
 
-    public String getToken() {
+    @Override
+    public int getToken() {
         return token;
     }
 
-    public void setToken(String token) {
+    public void setToken(int token) {
         this.token = token;
     }
 

@@ -26,13 +26,26 @@ public class Client {
             return;
         }
 
-        System.out.println("Print-server login: ");
-        while (!login());
-    }
-
-    private static boolean login(){
         Scanner input = new Scanner(System.in);
 
+        System.out.println(Colors.ANSI_CYAN + "Print-server login: " + Colors.ANSI_RESET);
+        while (!login(input));
+
+        System.out.println(Colors.ANSI_CYAN + "Welcome to the print server CLI interface: " + Colors.ANSI_RESET);
+        while (true){
+            System.out.print(">> "); Command(input.nextLine());
+        }
+    }
+
+    private static void Command(String command){
+        String[] args = command.split(" ");
+        switch (args[0]){
+            case "hey":
+                System.out.println("Hello my friend");
+        }
+    }
+
+    private static boolean login(Scanner input){
         Credentials c = new Credentials();
 
         System.out.print(Colors.ANSI_BLUE + "email: " + Colors.ANSI_RESET); c.setUsername(input.nextLine());
