@@ -6,6 +6,11 @@ public class PrintParams implements Serializable {
     private String filename;
     private String printer;
 
+    public PrintParams(String filename, String printer) {
+        this.filename = filename;
+        this.printer = printer;
+    }
+
     public String getFilename() {
         return filename;
     }
