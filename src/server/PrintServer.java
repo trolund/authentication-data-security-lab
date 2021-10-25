@@ -3,9 +3,11 @@ package server;
 import javassist.NotFoundException;
 import server.data.mocking.IMockUserData;
 import server.data.mocking.MockUserData;
-import server.data.models.Job;
+import shared.dto.Job;
 import server.data.models.Session;
 import server.data.models.User;
+import server.printer.IPrinter;
+import server.printer.Printer;
 import server.services.*;
 import server.services.interfaces.ILogService;
 import server.services.interfaces.ISessionService;
@@ -19,7 +21,6 @@ import shared.exceptions.Unauthorized;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
-import java.util.concurrent.PriorityBlockingQueue;
 
 public class PrintServer extends UnicastRemoteObject implements IPrintServer {
 
@@ -28,8 +29,9 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
     private final ISessionService sessionService;
     private final ArrayList<String> inMemoryLog;
     private final HashMap<String, String> config;
-    private final Queue<Job> queue;
+    private final List<IPrinter> printers;
     private final ILogService logService;
+    private static boolean isStarted = true;
 
     public PrintServer() throws RemoteException {
         userService = new UserService();
@@ -38,23 +40,36 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
         logService = new LogService();
         inMemoryLog = new ArrayList();
         config = new HashMap<>();
-        queue = new PriorityBlockingQueue<>();
+        printers = new ArrayList<>();
+
+        printers.add(new Printer("303A"));
+        printers.add(new Printer("101"));
+        printers.add(new Printer("308"));
 
         // seeding user data
         IMockUserData mockUserData = new MockUserData();
         mockUserData.createMockUsers();
     }
 
+    // done
     @Override
-    public synchronized void print(DataPacked<PrintParams> params) throws Unauthorized {
+    public synchronized void print(DataPacked<PrintParams> params) throws Unauthorized, NotFoundException {
         User u = processRequest(params.getToken(), "print");
-        serverLog("The file: " + params.getPayload().getFilename() + " is being printed on: " + params.getPayload().getPrinter(), u.getUserId());
+        IPrinter printer = getPrinter(params.getPayload().getPrinter(), u.getUserId());
+
+        // send job to printer
+        printer.addJob(new Job(params.getPayload().getFilename(), params.getPayload().getPrinter()));
+
+        serverLog("The file: " + params.getPayload().getFilename() + " will be printed on: " + params.getPayload().getPrinter(), u.getUserId());
     }
 
+    // done
     @Override
-    public synchronized Collection<Job> queue(DataPacked<QueueParams> params) throws Unauthorized {
+    public synchronized Collection<Job> queue(DataPacked<QueueParams> params) throws Unauthorized, NotFoundException {
         User u = processRequest(params.getToken(), "queue");
-        return queue;
+        IPrinter printer = getPrinter(params.getPayload().getPrinter(), u.getUserId());
+
+        return printer.getQueue();
     }
 
     @Override
@@ -67,22 +82,34 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
         Collections.swap(queue, url.indexOf(itemToMove), 0);*/
     }
 
+    // done
     @Override
     public synchronized void start(DataPacked<Object> params) throws Unauthorized {
         User u = processRequest(params.getToken(), "start");
+        isStarted = true;
         serverLog("startet print server", u.getUserId());
     }
 
+    // done
     @Override
     public synchronized void stop(DataPacked<Object> params) throws Unauthorized {
         User u = processRequest(params.getToken(), "stop");
+        isStarted = false;
         serverLog("stopped print server", u.getUserId());
     }
 
+    // done
     @Override
     public synchronized void restart(DataPacked<Object> params) throws Unauthorized {
         User u = processRequest(params.getToken(), "restart");
-        serverLog("Printer have restarted.", u.getUserId());
+        try {
+            isStarted = false;
+            Thread.sleep(2000);
+            isStarted = true;
+            serverLog("Printer have restarted.", u.getUserId());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -91,6 +118,7 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
         return inMemoryLog.get(inMemoryLog.size()-1);
     }
 
+    // done
     @Override
     public synchronized void readConfig(DataPacked<String> params) throws Unauthorized {
         User u = processRequest(params.getToken(), "start");
@@ -98,13 +126,15 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
         serverLog("config: [ value: " + params.getPayload() + " = " + value + " ]", u.getUserId());
     }
 
+    // done
     @Override
     public synchronized void setConfig(DataPacked<SetConfigParams> params) throws Unauthorized {
         User u = processRequest(params.getToken(), "setConfig");
-            config.put(params.getPayload().getParameter(), params.getPayload().getValue());
-            serverLog("config have been set on: " + params.getPayload().getParameter(), u.getUserId());
+        config.put(params.getPayload().getParameter(), params.getPayload().getValue());
+        serverLog("config have been set on: " + params.getPayload().getParameter(), u.getUserId());
     }
 
+    // done
     @Override
     public synchronized int login(DataPacked<Credentials> params) throws NotFoundException, Unauthorized {
             String userName = params.getPayload().getUsername();
@@ -129,6 +159,19 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
             }
     }
 
+    private IPrinter getPrinter(String name, int userID) throws NotFoundException {
+        Optional<IPrinter> p = printers.stream().filter((x) -> x.getName() == name).findAny();
+        IPrinter printer = p.get();
+
+        if(printer == null){
+            String msg = "The printer " + name + " was not found.";
+            serverLog(msg, userID, true);
+            throw new NotFoundException(msg);
+        }
+
+        return printer;
+    }
+
     public ArrayList<String> getInMemoryLog() {
         return inMemoryLog;
     }
@@ -149,7 +192,13 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
     private User processRequest(int sessionId, String msg) throws Unauthorized {
         Session s = sessionService.getValidSession(sessionId);
 
-        // check users sessionid.
+        if(!isStarted){
+            String logMsg = "Server have NOT been started. please run the start command.";
+            serverLog(logMsg, s.getUser().getUserId(), true);
+            throw new RuntimeException(logMsg);
+        }
+
+        // check users sessionID.
         if(s == null){
             serverLog("Invalid session id, id: " + sessionId, s.getUser().getUserId(), true);
             throw new Unauthorized("Invalid session id, id: " + sessionId);

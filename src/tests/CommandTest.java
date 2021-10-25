@@ -16,7 +16,7 @@ public class CommandTest {
 
     @Test
     void demoTestMethod() {
-        String input = "print -f filename.pdf -p office_printer";
+        String input = "print -f filename.pdf -p 303A";
         String[] args = input.split(" ");
 
         String command = args[0];
@@ -25,7 +25,7 @@ public class CommandTest {
 
         assertEquals("print", command);
         assertEquals("filename.pdf", fileName);
-        assertEquals("office_printer", printerName);
+        assertEquals("303A", printerName);
     }
 
 }

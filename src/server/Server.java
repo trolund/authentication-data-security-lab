@@ -19,13 +19,13 @@ public class Server {
     public static String url = "rmi://" + domain + ":" + port + "/" + serviceName;
 
     public static void main(String[] arg) throws Exception {
-        // Secure channel Factories
+        // Secure channel factories
         SslClientSocketFactory csf = new SslClientSocketFactory("client", "clientpw");
         SslServerSocketFactory ssf = new SslServerSocketFactory("registry", "registrypw");
 
         Registry registry = LocateRegistry.createRegistry(port, csf, ssf);
 
-        // Service with authentication middelware.
+        // create server object
         IPrintServer service = new PrintServer();
 
         // bind service

@@ -1,7 +1,7 @@
 package shared;
 
 import javassist.NotFoundException;
-import server.data.models.Job;
+import shared.dto.Job;
 import shared.dto.*;
 import shared.exceptions.Unauthorized;
 
@@ -10,8 +10,8 @@ import java.util.Collection;
 
 public interface IPrintServer extends java.rmi.Remote {
 
-    void print(DataPacked<PrintParams> params) throws RemoteException, Unauthorized;   // prints file filename on the specified printer
-    Collection<Job> queue(DataPacked<QueueParams> params) throws RemoteException, Unauthorized;   // lists the print queue for a given printer on the user's display in lines of the form <job number>   <file name>
+    void print(DataPacked<PrintParams> params) throws RemoteException, Unauthorized, NotFoundException;   // prints file filename on the specified printer
+    Collection<Job> queue(DataPacked<QueueParams> params) throws RemoteException, Unauthorized, NotFoundException;   // lists the print queue for a given printer on the user's display in lines of the form <job number>   <file name>
     void topQueue(DataPacked<TopQueueParams> params) throws RemoteException, Unauthorized;   // moves job to the top of the queue
     void start(DataPacked<Object> params) throws RemoteException, Unauthorized;   // starts the print server
     void stop(DataPacked<Object> params) throws RemoteException, Unauthorized;   // stops the print server

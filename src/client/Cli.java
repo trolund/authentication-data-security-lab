@@ -46,7 +46,7 @@ public class Cli {
         }
     }
 
-    public void Command(String command) throws RemoteException, Unauthorized {
+    public void Command(String command) throws RemoteException, Unauthorized, NotFoundException {
 
         String[] args = command.split(" ");
         switch (args[0]){
