@@ -26,7 +26,7 @@ public class Server {
         Registry registry = LocateRegistry.createRegistry(port, csf, ssf);
 
         // Service with authentication middelware.
-        IPrintServer service = AuthMiddelware.newInstance(new PrintServer());
+        IPrintServer service = new PrintServer();
 
         // bind service
         registry.rebind(url, service);

@@ -6,10 +6,10 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import server.data.models.User;
 import server.data.utils.HibernateUtil;
+import server.services.interfaces.ISessionService;
 
 import javax.persistence.NoResultException;
 import java.io.Serializable;
-import java.util.Date;
 
 public class SessionService implements ISessionService, Serializable {
 
@@ -38,7 +38,7 @@ public class SessionService implements ISessionService, Serializable {
 
             String hql = "SELECT S FROM Session S " +
                     "WHERE S.sessionId = '" + sessionId + "' " +
-//                    "AND S.user.email = '" + email + "'" + " " +
+ //                   "AND S.user.email = '" + email + "'" + " " +
                     "AND S.validTo >= current_time()";
 
             Query<server.data.models.Session> query = session.createQuery(hql);

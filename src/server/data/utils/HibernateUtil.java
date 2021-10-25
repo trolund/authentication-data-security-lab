@@ -1,6 +1,8 @@
 package server.data.utils;
 
 import java.io.File;
+import java.util.logging.Level;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
@@ -12,6 +14,7 @@ public class HibernateUtil
     {
         try
         {
+            java.util.logging.Logger.getLogger("org.hibernate").setLevel(Level.OFF);
             // Create the SessionFactory from hibernate.cfg.xml
             return new Configuration().configure(new File("hibernate.cfg.xml")).buildSessionFactory();
         }

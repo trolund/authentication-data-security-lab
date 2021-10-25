@@ -9,10 +9,15 @@ import java.io.Serializable;
 @Table(name = "Job", uniqueConstraints = { @UniqueConstraint(columnNames = "ID") })
 public class Job extends BaseEntity implements Serializable {
 
+    public Job(Integer jobID, String fileName, String printer) {
+        this.jobID = jobID;
+        this.fileName = fileName;
+        this.printer = printer;
+    }
+
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID", unique = true, nullable = false)
-    private Integer employeeId;
+    private Integer jobID;
 
     @Column(name = "FileName", unique = true, nullable = false, length = 100)
     private String fileName;

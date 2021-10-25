@@ -11,7 +11,7 @@ public class PasswordService implements IPasswordService {
     }
 
     @Override
-    public boolean correctPassword(String candidate_password, String storedHash){
-        return BCrypt.checkpw(candidate_password, storedHash);
+    public boolean correctPassword(String candidatePassword, String storedHash){
+        return BCrypt.checkpw(candidatePassword, storedHash);
     }
 }

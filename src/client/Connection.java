@@ -3,20 +3,12 @@ package client;
 import server.Server;
 import server.transport.SslClientSocketFactory;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.RMIClientSocketFactory;
-import java.security.KeyManagementException;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.UnrecoverableKeyException;
-import java.security.cert.CertificateException;
 
 public class Connection<T> {
 
@@ -25,7 +17,6 @@ public class Connection<T> {
 
     private synchronized boolean createConnection(RMIClientSocketFactory factory){
         try {
-
             Registry registry = LocateRegistry.getRegistry(Server.domain, Server.port, factory);
 
             s = (T) registry.lookup(Server.url);
@@ -42,7 +33,7 @@ public class Connection<T> {
         return false;
     }
 
-    public synchronized boolean connect(){
+    public synchronized boolean connect() throws RuntimeException{
         try {
             if (!isConnected()) {
                 int count = 0;
@@ -60,6 +51,7 @@ public class Connection<T> {
 
                 if (count == NUM_OF_RETRIES) {
                     System.out.println("Make sure that the server have been started.");
+                    throw new RuntimeException("Failed to connect");
                 }
             } else {
                 System.out.println("Connection is already active.");

@@ -14,6 +14,10 @@ public class Session extends BaseEntity implements Serializable {
     public Session() {
     }
 
+    public Session(User user) {
+        this.user = user;
+    }
+
     public Session(int hoursToAdd, User user) {
         this.hoursToAdd = hoursToAdd;
         this.user = user;
@@ -35,4 +39,45 @@ public class Session extends BaseEntity implements Serializable {
     @Column(name = "ValidTo", nullable = false)
     private Date validTo;
 
+    public int getHoursToAdd() {
+        return hoursToAdd;
+    }
+
+    public void setHoursToAdd(int hoursToAdd) {
+        this.hoursToAdd = hoursToAdd;
+    }
+
+    public Integer getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(Integer sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Date getValidTo() {
+        return validTo;
+    }
+
+    public void setValidTo(Date validTo) {
+        this.validTo = validTo;
+    }
+
+    @Override
+    public String toString() {
+        return "Session{" +
+                "hoursToAdd=" + hoursToAdd +
+                ", sessionId=" + sessionId +
+                ", user=" + user +
+                ", validTo=" + validTo +
+                '}';
+    }
 }

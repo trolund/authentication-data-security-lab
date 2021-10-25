@@ -1,4 +1,4 @@
-package server.services;
+package server.services.interfaces;
 
 import server.data.models.Session;
 import server.data.models.User;

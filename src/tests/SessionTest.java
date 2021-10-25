@@ -4,15 +4,14 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import server.data.models.Session;
 import server.data.models.User;
-import server.services.ISessionService;
+import server.services.interfaces.ISessionService;
 import server.services.PasswordService;
 import server.services.SessionService;
 import server.services.UserService;
 import server.services.interfaces.IPasswordService;
 import server.services.interfaces.IUserService;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class SessionTest {
 
@@ -56,5 +55,7 @@ public class SessionTest {
         Session s = sessionService.getValidSession(sessionID);
 
         assertNotNull(s);
+
+        assertTrue(sessionService.isValidSession(sessionID));
     }
 }
