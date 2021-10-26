@@ -5,6 +5,10 @@ import java.io.Serializable;
 public class StatusParams implements Serializable {
     private String printer;
 
+    public StatusParams(String printerName) {
+        printer = printerName;
+    }
+
     public String getPrinter() {
         return printer;
     }

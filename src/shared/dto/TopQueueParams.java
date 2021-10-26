@@ -7,6 +7,12 @@ public class TopQueueParams implements Serializable {
     private String printer;
     private int job;
 
+    public TopQueueParams(String printerName, int jobID) {
+        printer = printerName;
+        job = jobID;
+
+    }
+
     public String getPrinter() {
         return printer;
     }

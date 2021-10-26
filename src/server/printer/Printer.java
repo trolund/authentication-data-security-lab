@@ -9,9 +9,9 @@ import java.util.stream.Collectors;
 public class Printer implements Runnable, IPrinter {
 
     private Queue<Job> queue = null;
-    private String status = "idle";
-    private String name = "";
+    private String name = null;
 
+    private String status = "idle";
 
     public Printer(String name) {
         this.name = name;

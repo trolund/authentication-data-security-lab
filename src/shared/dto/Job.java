@@ -2,7 +2,7 @@ package shared.dto;
 
 import java.io.Serializable;
 
-public class Job implements Serializable {
+public class Job implements Serializable, Comparable<Job> {
 
     public Job() {
     }
@@ -43,5 +43,16 @@ public class Job implements Serializable {
     @Override
     public String toString() {
         return "[" + jobID + "]" + " [printer = " + printer +" ]" + " [filename = " + fileName +" ]";
+    }
+
+    @Override
+    public int compareTo(Job o) {
+        if(this.jobID == o.jobID){
+            return 0;
+        }else if (this.jobID < o.jobID){
+            return -1;
+        }else {
+            return 1;
+        }
     }
 }
