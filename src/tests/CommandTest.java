@@ -9,7 +9,6 @@ public class CommandTest {
 
     private CommandHelper helper;
 
-
     public CommandTest() {
         this.helper = new CommandHelper();
     }

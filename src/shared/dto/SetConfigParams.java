@@ -6,6 +6,11 @@ public class SetConfigParams implements Serializable {
     private String parameter;
     private String value;
 
+    public SetConfigParams(String parameter, String value) {
+        this.parameter = parameter;
+        this.value = value;
+    }
+
     public String getParameter() {
         return parameter;
     }

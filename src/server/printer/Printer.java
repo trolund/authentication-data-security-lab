@@ -2,13 +2,13 @@ package server.printer;
 
 import shared.dto.Job;
 
-import java.util.HashMap;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.stream.Collectors;
 
 public class Printer implements Runnable, IPrinter {
 
-    private final Queue<Job> queue;
+    private Queue<Job> queue = null;
     private String status = "idle";
     private String name = "";
 
@@ -42,6 +42,25 @@ public class Printer implements Runnable, IPrinter {
         return queue;
     }
 
+    public void moveOnTop(int jobID){
+        List<Job> jobs = queue.stream().collect(Collectors.toList());
+
+        Job theJobToMove = jobs.stream()
+                .filter(job -> job.getJobID() == jobID)
+                .findAny()
+                .orElse(null);
+
+        jobs.remove(theJobToMove);
+        jobs.add(0, theJobToMove);
+
+        queue.clear();
+        queue.addAll(jobs);
+    }
+
+    public void reset(){
+        queue.clear();
+    }
+
     private void printCurrentJob(){
         // do the printing?
         try {
@@ -51,6 +70,10 @@ public class Printer implements Runnable, IPrinter {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getStatus() {
+        return status;
     }
 
     public synchronized boolean haveWork(){

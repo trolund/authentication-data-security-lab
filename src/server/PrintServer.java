@@ -16,6 +16,7 @@ import shared.Credentials;
 import shared.DataPacked;
 import shared.IPrintServer;
 import shared.dto.*;
+import shared.exceptions.NotStarted;
 import shared.exceptions.Unauthorized;
 
 import java.rmi.RemoteException;
@@ -53,7 +54,7 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
 
     // done
     @Override
-    public synchronized void print(DataPacked<PrintParams> params) throws Unauthorized, NotFoundException {
+    public synchronized void print(DataPacked<PrintParams> params) throws Unauthorized, NotFoundException, NotStarted {
         User u = processRequest(params.getToken(), "print");
         IPrinter printer = getPrinter(params.getPayload().getPrinter(), u.getUserId());
 
@@ -65,7 +66,7 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
 
     // done
     @Override
-    public synchronized Collection<Job> queue(DataPacked<QueueParams> params) throws Unauthorized, NotFoundException {
+    public synchronized Collection<Job> queue(DataPacked<QueueParams> params) throws Unauthorized, NotFoundException, NotStarted {
         User u = processRequest(params.getToken(), "queue");
         IPrinter printer = getPrinter(params.getPayload().getPrinter(), u.getUserId());
 
@@ -73,18 +74,16 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
     }
 
     @Override
-    public synchronized void topQueue(DataPacked<TopQueueParams> params) throws Unauthorized {
+    public synchronized void topQueue(DataPacked<TopQueueParams> params) throws Unauthorized, NotFoundException, NotStarted {
         User u = processRequest(params.getToken(), "topQueue");
-  /*      int num = params.getPayload().getJob();
-        String printer = params.getPayload().getPrinter();
+        IPrinter printer = getPrinter(params.getPayload().getPrinter(), u.getUserId());
 
-        queue.add(new Job());
-        Collections.swap(queue, url.indexOf(itemToMove), 0);*/
+        printer.moveOnTop(params.getPayload().getJob());
     }
 
     // done
     @Override
-    public synchronized void start(DataPacked<Object> params) throws Unauthorized {
+    public synchronized void start(DataPacked<Object> params) throws Unauthorized, NotStarted {
         User u = processRequest(params.getToken(), "start");
         isStarted = true;
         serverLog("startet print server", u.getUserId());
@@ -92,18 +91,20 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
 
     // done
     @Override
-    public synchronized void stop(DataPacked<Object> params) throws Unauthorized {
+    public synchronized void stop(DataPacked<Object> params) throws Unauthorized, NotStarted {
         User u = processRequest(params.getToken(), "stop");
         isStarted = false;
         serverLog("stopped print server", u.getUserId());
+        System.exit(0);
     }
 
     // done
     @Override
-    public synchronized void restart(DataPacked<Object> params) throws Unauthorized {
+    public synchronized void restart(DataPacked<Object> params) throws Unauthorized, NotStarted {
         User u = processRequest(params.getToken(), "restart");
         try {
             isStarted = false;
+            resetQueues();
             Thread.sleep(2000);
             isStarted = true;
             serverLog("Printer have restarted.", u.getUserId());
@@ -113,22 +114,26 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
     }
 
     @Override
-    public synchronized String status(DataPacked<StatusParams> params) throws Unauthorized {
+    public synchronized String status(DataPacked<StatusParams> params) throws Unauthorized, NotFoundException, NotStarted {
         User u = processRequest(params.getToken(), "status");
-        return inMemoryLog.get(inMemoryLog.size()-1);
+        IPrinter printer = getPrinter(params.getPayload().getPrinter(), u.getUserId());
+
+        return printer.getStatus();
     }
 
     // done
     @Override
-    public synchronized void readConfig(DataPacked<String> params) throws Unauthorized {
+    public synchronized String readConfig(DataPacked<String> params) throws Unauthorized, NotStarted {
         User u = processRequest(params.getToken(), "start");
         String value = config.get(params.getPayload());
-        serverLog("config: [ value: " + params.getPayload() + " = " + value + " ]", u.getUserId());
+        String conf = "config: [ value: " + params.getPayload() + " = " + value + " ]";
+        serverLog(conf, u.getUserId());
+        return conf;
     }
 
     // done
     @Override
-    public synchronized void setConfig(DataPacked<SetConfigParams> params) throws Unauthorized {
+    public synchronized void setConfig(DataPacked<SetConfigParams> params) throws Unauthorized, NotStarted {
         User u = processRequest(params.getToken(), "setConfig");
         config.put(params.getPayload().getParameter(), params.getPayload().getValue());
         serverLog("config have been set on: " + params.getPayload().getParameter(), u.getUserId());
@@ -157,6 +162,10 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
                 serverLog("The user does not exist in the system.", user.getUserId(), true);
                 throw new NotFoundException("The user does not exist in the system.");
             }
+    }
+
+    private void resetQueues(){
+        printers.forEach(p -> p.reset());
     }
 
     private IPrinter getPrinter(String name, int userID) throws NotFoundException {
@@ -189,13 +198,13 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
         serverLog(msg, userID,false);
     }
 
-    private User processRequest(int sessionId, String msg) throws Unauthorized {
+    private User processRequest(int sessionId, String msg) throws Unauthorized, NotStarted {
         Session s = sessionService.getValidSession(sessionId);
 
         if(!isStarted){
             String logMsg = "Server have NOT been started. please run the start command.";
             serverLog(logMsg, s.getUser().getUserId(), true);
-            throw new RuntimeException(logMsg);
+            throw new NotStarted(logMsg);
         }
 
         // check users sessionID.

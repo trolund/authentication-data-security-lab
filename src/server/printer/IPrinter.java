@@ -10,4 +10,7 @@ public interface IPrinter {
     void addJob(Job job);
     String getName();
     Queue<Job> getQueue();
+    String getStatus();
+    void moveOnTop(int jobID);
+    void reset();
 }
