@@ -5,8 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.ServerSocket;
-import java.rmi.server.RMIServerSocketFactory;
+import java.net.Socket;
+import java.rmi.server.RMIClientSocketFactory;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
@@ -16,16 +16,16 @@ import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLServerSocket;
-import javax.net.ssl.SSLServerSocketFactory;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
 
-public class SslServerSocketFactory implements RMIServerSocketFactory, Serializable {
+public class SslClientSocketFactory implements RMIClientSocketFactory, Serializable {
 
-    private SSLServerSocketFactory ssf = null;
+    private SSLSocketFactory sf = null;
 
-    public SslServerSocketFactory(String filename, String password) throws FileNotFoundException, IOException, NoSuchAlgorithmException, CertificateException, KeyStoreException, UnrecoverableKeyException, KeyManagementException {
-        String filePathName = "src/shared/keys/";
+    public SslClientSocketFactory(String filename, String password) throws FileNotFoundException, IOException, NoSuchAlgorithmException, CertificateException, KeyStoreException, UnrecoverableKeyException, KeyManagementException {
+        String filePathName = "src/main/java/shared/keys/";
 
         KeyStore ks = KeyStore.getInstance("jks");
         ks.load(new FileInputStream(new File(filePathName + filename + ".ks")), password.toCharArray());
@@ -37,13 +37,12 @@ public class SslServerSocketFactory implements RMIServerSocketFactory, Serializa
         tmf.init(ts);
         SSLContext sslContext = SSLContext.getInstance("TLS");
         sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), new SecureRandom());
-        ssf = sslContext.getServerSocketFactory();
+        sf = sslContext.getSocketFactory();
     }
 
     @Override
-    public ServerSocket createServerSocket(int port) throws IOException {
-        SSLServerSocket sslSock = (SSLServerSocket) ssf.createServerSocket(port);
-        sslSock.setNeedClientAuth(true);
+    public Socket createSocket(String host, int port) throws IOException {
+        SSLSocket sslSock = (SSLSocket) sf.createSocket(host, port);
         return sslSock;
     }
 

@@ -1,9 +1,7 @@
 package tests;
 
-import org.hibernate.Session;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import server.data.utils.HibernateUtil;
 import server.data.models.User;
 import server.services.PasswordService;
 import server.services.UserService;
