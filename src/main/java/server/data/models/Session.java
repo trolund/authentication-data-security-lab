@@ -12,6 +12,9 @@ public class Session extends BaseEntity implements Serializable {
     private int hoursToAdd = 5;
 
     public Session() {
+        LocalDateTime dateStart = LocalDateTime.now();
+        LocalDateTime dateStop = dateStart.plusHours(hoursToAdd);
+        this.validTo = java.sql.Timestamp.valueOf(dateStop);
     }
 
     public Session(User user) {

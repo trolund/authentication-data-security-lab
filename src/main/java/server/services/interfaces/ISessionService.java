@@ -5,6 +5,7 @@ import server.data.models.User;
 
 public interface ISessionService {
     int addSession(User user);
-    Session getValidSession(int sessionId);
-    boolean isValidSession(int sessionId);
+    Session getValidSession(Integer sessionId);
+    boolean isValidSession(Integer sessionId);
+    void endSession(Integer sessionId);
 }

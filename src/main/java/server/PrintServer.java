@@ -22,6 +22,7 @@ import shared.exceptions.Unauthorized;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class PrintServer extends UnicastRemoteObject implements IPrintServer {
 
@@ -43,9 +44,7 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
         config = new HashMap<>();
         printers = new ArrayList<>();
 
-        printers.add(new Printer("303A"));
-        printers.add(new Printer("101"));
-        printers.add(new Printer("308"));
+        setupPrinters();
 
         // seeding user data
         IMockUserData mockUserData = new MockUserData();
@@ -120,7 +119,15 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
 
         isStarted = false;
         serverLog("stopped print server", u.getUserId());
-        System.exit(0);
+
+        CompletableFuture.runAsync(() -> {
+            try {
+                Thread.sleep(1000);
+                System.exit(0);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
     }
 
     // done
@@ -237,15 +244,21 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
     }
 
     @Override
-    public synchronized void logout(DataPacked<Object> params) {
-
+    public synchronized void logout(DataPacked<Object> params) throws NotStarted, Unauthorized {
+        processRequest(params.getToken(), "logout");
+        sessionService.endSession(params.getToken());
     }
 
     private void serverLog(String msg, int userID){
         serverLog(msg, userID,false);
     }
 
-    private User processRequest(int sessionId, String msg) throws Unauthorized, NotStarted {
+    private User processRequest(Integer sessionId, String msg) throws Unauthorized, NotStarted {
+        if(sessionId == null){
+            serverLog("No session id was given", -1, true);
+            throw new Unauthorized("No session id was given");
+        }
+
         Session s = sessionService.getValidSession(sessionId);
         try{
 
@@ -286,5 +299,18 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
             System.out.println(info + ui + msg);
             logService.addToServerLog(userID, info + msg);
         }
+    }
+
+    private void setupPrinters(){
+        Runnable p1 = new Printer("303A");
+        Thread t1 = new Thread(p1);
+        t1.start();
+
+        Runnable p2 = new Printer("101");
+        Thread t2 = new Thread(p2);
+        t2.start();
+
+        printers.add((IPrinter) p1);
+        printers.add((IPrinter) p2);
     }
 }

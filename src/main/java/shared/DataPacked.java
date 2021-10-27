@@ -4,10 +4,10 @@ import java.io.Serializable;
 
 public class DataPacked<T> implements Serializable, IAuth {
 
-    private int token;
+    private Integer token;
     private T payload;
 
-    public DataPacked(int token, T payload) {
+    public DataPacked(Integer token, T payload) {
         this.token = token;
         this.payload = payload;
     }
@@ -16,17 +16,17 @@ public class DataPacked<T> implements Serializable, IAuth {
         this.payload = payload;
     }
 
-    public DataPacked(int token) {
+    public DataPacked(Integer token) {
         this.token = token;
         this.payload = null;
     }
 
     @Override
-    public int getToken() {
+    public Integer getToken() {
         return token;
     }
 
-    public void setToken(int token) {
+    public void setToken(Integer token) {
         this.token = token;
     }
 

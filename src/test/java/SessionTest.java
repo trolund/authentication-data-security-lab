@@ -28,6 +28,31 @@ public class SessionTest {
     public static void init(){
 
     }
+    @Test
+    void getSession(){
+        String email = "trolund@gmail.com";
+        String hashedPassword = passwordService.hashPassword("Password123");
+        userService.deleteUser(email);
+
+        Integer userId = userService.createUser(new User(
+                email,
+                "Troels",
+                "Lund",
+                hashedPassword));
+
+        User u = userService.getUser(email);
+        Integer sessionID = sessionService.addSession(u);
+        Session s = sessionService.getValidSession(sessionID);
+
+        assertNotNull(s);
+
+        // logout
+        sessionService.endSession(sessionID);
+
+        Session s2 = sessionService.getValidSession(sessionID);
+
+        assertNull(s2);
+    }
 
     @Test
     void AddSessionToken() {

@@ -64,7 +64,8 @@ public class Printer implements Runnable, IPrinter {
     private void printCurrentJob(){
         // do the printing?
         try {
-            status = "printing......";
+            Job currentJob = queue.peek();
+            status = "printing job: " + currentJob.getFileName();
             Thread.sleep(5000);
             queue.remove();
         } catch (InterruptedException e) {
