@@ -79,8 +79,10 @@ public class Cli {
             case "readConfig":
                 String option = helper.getArgValue(args,"-o");
                 System.out.println(ps.readConfig(new DataPacked(sessionID, option)));
+                break;
             case "setConfig":
                 ps.setConfig(new DataPacked(sessionID, new SetConfigParams(helper.getArgValue(args,"-o"), helper.getArgValue(args,"-v"))));
+                break;
             case "queue":
                 Collection jobs = ps.queue(new DataPacked(sessionID, new QueueParams(helper.getArgValue(args,"-p"))));
                 printJobs(jobs);
@@ -99,6 +101,8 @@ public class Cli {
                 String printerName = helper.getArgValue(args,"-p");
 
                 ps.print(new DataPacked(sessionID, new PrintParams(fileName,printerName)));
+
+                System.out.println("Printer: " + printerName + " have accepted the job.");
                 break;
             default:
                 System.out.println("Command: " + args[0] + " was not found");

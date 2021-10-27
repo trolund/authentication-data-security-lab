@@ -26,17 +26,29 @@ public class CommandTest {
     }
 
     @Test
-    void start() {
-        String input = "print -f filename.pdf -p 303A";
+    void queue() {
+        String input = "queue -p 303A";
         String[] args = input.split(" ");
 
         String command = args[0];
         String fileName = helper.getArgValue(args,"-f");
         String printerName = helper.getArgValue(args,"-p");
 
-        assertEquals("print", command);
-        assertEquals("filename.pdf", fileName);
+        assertEquals("queue", command);
         assertEquals("303A", printerName);
     }
 
+
+    @Test
+    void setConfig() {
+        String input = "queue -p 303A";
+        String[] args = input.split(" ");
+
+        String command = args[0];
+        String fileName = helper.getArgValue(args,"-f");
+        String printerName = helper.getArgValue(args,"-p");
+
+        assertEquals("queue", command);
+        assertEquals("303A", printerName);
+    }
 }

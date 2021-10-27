@@ -180,7 +180,11 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
         }
 
         config.put(params.getPayload().getParameter(), params.getPayload().getValue());
-        serverLog("config have been set on: " + params.getPayload().getParameter(), u.getUserId());
+        serverLog("config have been set on: " +
+                params.getPayload().getParameter() +
+                " with the value of: " +
+                params.getPayload().getValue(),
+                u.getUserId());
     }
 
     // done
