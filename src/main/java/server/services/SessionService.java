@@ -16,7 +16,7 @@ import java.util.Date;
 
 public class SessionService implements ISessionService, Serializable {
 
-    private static String generateRandomPassword(int len, int randNumOrigin, int randNumBound)
+    private static String generateRandomToken(int len, int randNumOrigin, int randNumBound)
     {
         SecureRandom random = new SecureRandom();
         return random.ints(randNumOrigin, randNumBound + 1)
@@ -38,7 +38,7 @@ public class SessionService implements ISessionService, Serializable {
             server.data.models.Session s = new server.data.models.Session(7, user);
             int len = 128;
             int randNumOrigin = 48, randNumBound = 122;
-            token = generateRandomPassword(len, randNumOrigin, randNumBound);
+            token = generateRandomToken(len, randNumOrigin, randNumBound);
             s.setToken(token);
             SessionID = (Integer) session.save(s);
             tx.commit();
