@@ -1,5 +1,3 @@
-package tests;
-
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import server.data.models.Session;

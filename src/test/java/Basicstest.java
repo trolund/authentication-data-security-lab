@@ -1,5 +1,3 @@
-package tests;
-
 import client.Cli;
 import org.junit.jupiter.api.Test;
 import server.PrintServer;

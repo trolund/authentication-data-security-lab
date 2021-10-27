@@ -1,5 +1,3 @@
-package tests;
-
 import client.CommandHelper;
 import org.junit.jupiter.api.Test;
 
