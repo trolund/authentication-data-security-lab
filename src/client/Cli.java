@@ -18,7 +18,7 @@ public class Cli {
 
     private final IPrintServer ps;
     private final CommandHelper helper;
-    private int sessionID;
+    private Integer sessionID;
 
     public Cli(IPrintServer ps) {
         this.ps = ps;
@@ -36,8 +36,7 @@ public class Cli {
             while (!login(input));
         }
 
-        System.out.println(Colors.ANSI_GREEN + "login successful" + Colors.ANSI_RESET);
-        System.out.println();
+
 
         System.out.println(Colors.ANSI_CYAN + "Welcome to the print server CLI interface: " + Colors.ANSI_RESET);
         while (true){
@@ -112,12 +111,15 @@ public class Cli {
 
     private boolean login(Scanner input){
         Credentials c = new Credentials();
-
-        System.out.print(Colors.ANSI_BLUE + "email: " + Colors.ANSI_RESET); c.setUsername(input.nextLine());
-        System.out.print(Colors.ANSI_BLUE + "Password: " + Colors.ANSI_RESET); c.setPassword(input.nextLine());
-
+        sessionID = -1;
         try {
+            Thread.sleep(100);
+            System.out.print(Colors.ANSI_BLUE + "email: " + Colors.ANSI_RESET); c.setUsername(input.nextLine());
+            System.out.print(Colors.ANSI_BLUE + "Password: " + Colors.ANSI_RESET); c.setPassword(input.nextLine());
+
+
             sessionID = ps.login(new DataPacked(c));
+            System.out.println(Colors.ANSI_GREEN + "login successful" + Colors.ANSI_RESET);
             System.out.println();
         } catch (RemoteException e) {
 
@@ -126,6 +128,10 @@ public class Cli {
             System.err.println("there is no user with that email in the system. maybe the username was wrong?");
         } catch (Unauthorized e){
             System.err.println("Password was wrong.");
+        } catch (NullPointerException e){
+            System.err.println("Password was wrong.");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
         return sessionID != -1;

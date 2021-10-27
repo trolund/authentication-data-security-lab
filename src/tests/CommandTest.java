@@ -14,7 +14,21 @@ public class CommandTest {
     }
 
     @Test
-    void demoTestMethod() {
+    void print() {
+        String input = "print -f filename.pdf -p 303A";
+        String[] args = input.split(" ");
+
+        String command = args[0];
+        String fileName = helper.getArgValue(args,"-f");
+        String printerName = helper.getArgValue(args,"-p");
+
+        assertEquals("print", command);
+        assertEquals("filename.pdf", fileName);
+        assertEquals("303A", printerName);
+    }
+
+    @Test
+    void start() {
         String input = "print -f filename.pdf -p 303A";
         String[] args = input.split(" ");
 
