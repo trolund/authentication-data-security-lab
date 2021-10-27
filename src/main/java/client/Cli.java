@@ -88,7 +88,7 @@ public class Cli {
                 Collection jobs = ps.queue(new DataPacked(sessionID, new QueueParams(helper.getArgValue(args,"-p"))));
                 printJobs(jobs);
                 break;
-            case "top-queue":
+            case "topQueue":
                 ps.topQueue(new DataPacked(sessionID,
                         new TopQueueParams(
                                 helper.getArgValue(args,"-p"),
@@ -111,13 +111,15 @@ public class Cli {
             case "login":
                 while (!login(new Scanner(System.in)));
                 break;
+            case "":
+                break;
             default:
                 System.out.println("Command: " + args[0] + " was not found");
         }
     }
 
     private void printJobs(Collection jobs){
-        jobs.forEach(job -> System.out.println(job));
+        jobs.stream().sorted().forEach(job -> System.out.println(job));
     }
 
     private boolean login(Scanner input){

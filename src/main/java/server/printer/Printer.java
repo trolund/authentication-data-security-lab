@@ -10,6 +10,7 @@ public class Printer implements Runnable, IPrinter {
 
     private Queue<Job> queue = null;
     private String name = null;
+    private int idCounter = 0;
 
     private String status = "idle";
 
@@ -45,10 +46,18 @@ public class Printer implements Runnable, IPrinter {
     public void moveOnTop(int jobID){
         List<Job> jobs = queue.stream().collect(Collectors.toList());
 
+        Integer minID = jobs
+                .stream()
+                .mapToInt(v -> v.getJobID())
+                .min()
+                .orElse(0);
+
         Job theJobToMove = jobs.stream()
                 .filter(job -> job.getJobID() == jobID)
                 .findAny()
                 .orElse(null);
+
+        theJobToMove.setJobID(minID-1);
 
         jobs.remove(theJobToMove);
         jobs.add(0, theJobToMove);
@@ -83,6 +92,7 @@ public class Printer implements Runnable, IPrinter {
 
     @Override
     public void addJob(Job job){
+        job.setJobID(idCounter++);
         queue.add(job);
     }
 }

@@ -33,7 +33,7 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
     private final HashMap<String, String> config;
     private final List<IPrinter> printers;
     private final ILogService logService;
-    private static boolean isStarted = true;
+    private static boolean isStarted = false;
 
     public PrintServer() throws RemoteException {
         userService = new UserService();
@@ -262,7 +262,7 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
         Session s = sessionService.getValidSession(sessionId);
         try{
 
-            if(!isStarted){
+            if(!isStarted & msg != "start"){
                 String logMsg = "Server have NOT been started. please run the start command.";
                 serverLog(logMsg, s.getUser().getUserId(), true);
                 throw new NotStarted(logMsg);
