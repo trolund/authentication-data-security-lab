@@ -70,7 +70,7 @@ public class Cli {
                 break;
             case "restart":
                 ps.restart(new DataPacked(sessionID, null));
-                System.out.println("Server will be restarted in a moment");
+                System.out.println("Server have been restarted");
                 break;
             case "status":
                 String printer = helper.getArgValue(args,"-p");
