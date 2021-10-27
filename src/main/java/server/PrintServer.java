@@ -196,7 +196,7 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
 
     // done
     @Override
-    public synchronized int login(DataPacked<Credentials> params) throws NotFoundException, Unauthorized {
+    public synchronized String login(DataPacked<Credentials> params) throws NotFoundException, Unauthorized {
             String userName = params.getPayload().getUsername();
             String password = params.getPayload().getPassword();
 
@@ -204,10 +204,10 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
 
             if(user != null){
                 if(passwordService.correctPassword(password, user.getPassword())){
-                    int sessionID = sessionService.addSession(user);
+                    String token = sessionService.addSession(user);
 
-                    serverLog("User: " + user.getEmail() + " was login and have session id: " + sessionID, user.getUserId());
-                    return sessionID;
+                    serverLog("User: " + user.getEmail() + " was login and have session id: " + token, user.getUserId());
+                    return token;
                 }
                 else{
                     serverLog("Password was incorrect.", user.getUserId(), true);
@@ -253,13 +253,13 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
         serverLog(msg, userID,false);
     }
 
-    private User processRequest(Integer sessionId, String msg) throws Unauthorized, NotStarted {
-        if(sessionId == null){
+    private User processRequest(String token, String msg) throws Unauthorized, NotStarted {
+        if(token == null || token.length() == 0){
             serverLog("No session id was given", -1, true);
             throw new Unauthorized("No session id was given");
         }
 
-        Session s = sessionService.getValidSession(sessionId);
+        Session s = sessionService.getValidSession(token);
         try{
 
             if(!isStarted & msg != "start"){
@@ -270,8 +270,8 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
 
             // check users sessionID.
             if(s == null){
-                serverLog("Invalid session id, id: " + sessionId, s.getUser().getUserId(), true);
-                throw new Unauthorized("Invalid session id, id: " + sessionId);
+                serverLog("Invalid session id, id: " + token, s.getUser().getUserId(), true);
+                throw new Unauthorized("Invalid session id, id: " + token);
             }
 
             // log user activity

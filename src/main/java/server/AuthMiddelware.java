@@ -40,8 +40,8 @@ public class AuthMiddelware implements InvocationHandler, Serializable {
             // run auth on all other then login and logout.
            if(!m.getName().contains("login")){
                IAuth o = (IAuth) args[0];
-               int sessionId = o.getToken();
-               processRequest(sessionId, m.getName());
+               String token = o.getToken();
+               processRequest(token, m.getName());
            }
            result = m.invoke(obj, args);
         } catch (InvocationTargetException e) {
@@ -51,14 +51,14 @@ public class AuthMiddelware implements InvocationHandler, Serializable {
         return result;
     }
 
-    private void processRequest(int sessionId, String action) throws Unauthorized {
-        Session s = sessionService.getValidSession(sessionId);
+    private void processRequest(String token, String action) throws Unauthorized {
+        Session s = sessionService.getValidSession(token);
         System.out.println(s);
 
         // check users sessionid.
         if(s != null){
-            System.out.println("Invalid session id, id: " + sessionId);
-            throw new Unauthorized("Invalid session id, id: " + sessionId);
+            System.out.println("Invalid session id, id: " + token);
+            throw new Unauthorized("Invalid session id, id: " + token);
         }
         // System.out.println("Session id validted, id: " + sessionId);
         // log user activity

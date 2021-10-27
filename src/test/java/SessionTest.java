@@ -41,15 +41,15 @@ public class SessionTest {
                 hashedPassword));
 
         User u = userService.getUser(email);
-        Integer sessionID = sessionService.addSession(u);
-        Session s = sessionService.getValidSession(sessionID);
+        String token = sessionService.addSession(u);
+        Session s = sessionService.getValidSession(token);
 
         assertNotNull(s);
 
         // logout
-        sessionService.endSession(sessionID);
+        sessionService.endSession(token);
 
-        Session s2 = sessionService.getValidSession(sessionID);
+        Session s2 = sessionService.getValidSession(token);
 
         assertNull(s2);
     }
@@ -72,13 +72,13 @@ public class SessionTest {
         assertEquals(email, u.getEmail());
         assertEquals(hashedPassword, u.getPassword());
 
-        Integer sessionID = sessionService.addSession(u);
-        assertNotNull(sessionID);
+        String token = sessionService.addSession(u);
+        assertNotNull(token);
 
-        Session s = sessionService.getValidSession(sessionID);
+        Session s = sessionService.getValidSession(token);
 
         assertNotNull(s);
 
-        assertTrue(sessionService.isValidSession(sessionID));
+        assertTrue(sessionService.isValidSession(token));
     }
 }

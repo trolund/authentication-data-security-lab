@@ -20,7 +20,7 @@ public class Log extends BaseEntity implements Serializable {
     @Column(name = "userID", unique = false, nullable = false)
     private Integer userID;
 
-    @Column(name = "Action", unique = false, nullable = false, length = 100)
+    @Column(name = "Action", unique = false, nullable = false, length = 300)
     private String action;
 
 }

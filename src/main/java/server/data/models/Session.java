@@ -39,11 +39,22 @@ public class Session extends BaseEntity implements Serializable {
     @JoinColumn(name = "UserID")
     private User user;
 
+    @Column(name = "Token", unique = true, nullable = false)
+    private String token;
+
     @Column(name = "ValidTo", nullable = false)
     private Date validTo;
 
     public int getHoursToAdd() {
         return hoursToAdd;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public void setHoursToAdd(int hoursToAdd) {

@@ -18,7 +18,7 @@ public class Cli {
 
     private final IPrintServer ps;
     private final CommandHelper helper;
-    private Integer sessionID = null;
+    private String token = null;
 
     public Cli(IPrintServer ps) {
         this.ps = ps;
@@ -61,35 +61,35 @@ public class Cli {
         String[] args = command.split(" ");
         switch (args[0]){
             case "start":
-                ps.start(new DataPacked(sessionID, null));
+                ps.start(new DataPacked(token, null));
                 System.out.println("Server has started");
                 break;
             case "stop":
-                ps.stop(new DataPacked(sessionID, null));
+                ps.stop(new DataPacked(token, null));
                 System.out.println("Server will be stopped");
                 break;
             case "restart":
-                ps.restart(new DataPacked(sessionID, null));
+                ps.restart(new DataPacked(token, null));
                 System.out.println("Server have been restarted");
                 break;
             case "status":
                 String printer = helper.getArgValue(args,"-p");
-                String status = ps.status(new DataPacked(sessionID, new StatusParams(printer)));
+                String status = ps.status(new DataPacked(token, new StatusParams(printer)));
                 System.out.println("[STATUS]"  + "[" + printer +"] : "  + status);
                 break;
             case "readConfig":
                 String option = helper.getArgValue(args,"-o");
-                System.out.println(ps.readConfig(new DataPacked(sessionID, option)));
+                System.out.println(ps.readConfig(new DataPacked(token, option)));
                 break;
             case "setConfig":
-                ps.setConfig(new DataPacked(sessionID, new SetConfigParams(helper.getArgValue(args,"-o"), helper.getArgValue(args,"-v"))));
+                ps.setConfig(new DataPacked(token, new SetConfigParams(helper.getArgValue(args,"-o"), helper.getArgValue(args,"-v"))));
                 break;
             case "queue":
-                Collection jobs = ps.queue(new DataPacked(sessionID, new QueueParams(helper.getArgValue(args,"-p"))));
+                Collection jobs = ps.queue(new DataPacked(token, new QueueParams(helper.getArgValue(args,"-p"))));
                 printJobs(jobs);
                 break;
             case "topQueue":
-                ps.topQueue(new DataPacked(sessionID,
+                ps.topQueue(new DataPacked(token,
                         new TopQueueParams(
                                 helper.getArgValue(args,"-p"),
                                 Integer.parseInt(helper.getArgValue(args,"-j")
@@ -101,12 +101,12 @@ public class Cli {
                 String fileName = helper.getArgValue(args,"-f");
                 String printerName = helper.getArgValue(args,"-p");
 
-                ps.print(new DataPacked(sessionID, new PrintParams(fileName,printerName)));
+                ps.print(new DataPacked(token, new PrintParams(fileName,printerName)));
 
                 System.out.println("Printer: " + printerName + " have accepted the job.");
                 break;
             case "logout":
-                ps.logout(new DataPacked(sessionID));
+                ps.logout(new DataPacked(token));
                 break;
             case "login":
                 while (!login(new Scanner(System.in)));
@@ -124,14 +124,14 @@ public class Cli {
 
     private boolean login(Scanner input){
         Credentials c = new Credentials();
-        sessionID = -1;
+        token = null;
         try {
             Thread.sleep(100);
             System.out.print(Colors.ANSI_BLUE + "email: " + Colors.ANSI_RESET); c.setUsername(input.nextLine());
             System.out.print(Colors.ANSI_BLUE + "Password: " + Colors.ANSI_RESET); c.setPassword(input.nextLine());
 
 
-            sessionID = ps.login(new DataPacked(c));
+            token = ps.login(new DataPacked(c));
             System.out.println(Colors.ANSI_GREEN + "login successful" + Colors.ANSI_RESET);
             System.out.println();
         } catch (RemoteException e) {
@@ -144,6 +144,6 @@ public class Cli {
             e.printStackTrace();
         }
 
-        return sessionID != -1;
+        return token != null;
     }
 }
