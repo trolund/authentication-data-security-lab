@@ -14,7 +14,8 @@ public class MockUserData implements IMockUserData {
     private IUserService userService;
 
     private ArrayList<User> users = new ArrayList<User>() {{
-        add(new User("t", "Troels","Lund", "1"));
+        add(new User("john@doe.com", "John","Doe", "doe"));
+
     }};
 
     public MockUserData() {
