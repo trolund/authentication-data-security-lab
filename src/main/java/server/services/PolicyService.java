@@ -46,6 +46,16 @@ public class PolicyService implements IPolicyService {
     }
 
     @Override
+    public boolean haveAllRoles(String username, Roles[] roles){
+        return policyList.stream().allMatch(x -> haveRole(username, x.role));
+    }
+
+    @Override
+    public boolean haveSomeRoles(String username, Roles[] roles){
+        return policyList.stream().anyMatch(x -> haveRole(username, x.role));
+    }
+
+    @Override
     public boolean haveRole(String username, Roles role){
         for (Policy p: policyList) {
             if(p.username.equals(username) && p.role.equals(role)){
