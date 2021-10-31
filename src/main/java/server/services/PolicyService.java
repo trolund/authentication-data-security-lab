@@ -3,6 +3,7 @@ package server.services;
 import server.services.interfaces.IPolicyService;
 import shared.dto.Policy;
 import shared.dto.Roles;
+import shared.exceptions.Unauthorized;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -42,6 +43,24 @@ public class PolicyService implements IPolicyService {
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
+        }
+    }
+
+    public void haveAllRolesThrow(String username, Roles[] roles) throws Unauthorized {
+        if(!haveAllRoles(username, roles)){
+            throw new Unauthorized("User does not have all thise roles: " + roles.toString());
+        }
+    }
+
+    public void haveSomeRolesThrow(String username, Roles[] roles) throws Unauthorized {
+        if(!haveSomeRoles(username, roles)){
+            throw new Unauthorized("User does not have any of thise roles: " + roles.toString());
+        }
+    }
+
+    public void haveRoleThrow(String username, Roles role) throws Unauthorized {
+        if(!haveRole(username, role)){
+            throw new Unauthorized("User does not have the role: " + role.toString());
         }
     }
 
