@@ -1,8 +1,10 @@
 package server;
 
 import javassist.NotFoundException;
+import server.anotations.WithRoles;
 import server.data.mocking.IMockUserData;
 import server.data.mocking.MockUserData;
+import server.services.interfaces.IPolicyService;
 import shared.dto.Job;
 import server.data.models.Session;
 import server.data.models.User;
@@ -33,6 +35,7 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
     private final HashMap<String, String> config;
     private final List<IPrinter> printers;
     private final ILogService logService;
+    private final IPolicyService policyService;
     private static boolean isStarted = false;
 
     public PrintServer() throws RemoteException {
@@ -43,6 +46,8 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
         inMemoryLog = new ArrayList();
         config = new HashMap<>();
         printers = new ArrayList<>();
+        policyService = new PolicyService("src/main/java/server/policy.json");
+        policyService.getRoles();
 
         setupPrinters();
 
@@ -164,6 +169,7 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
 
     // done
     @Override
+    @WithRoles(roles = {"Admin"})
     public synchronized String readConfig(DataPacked<String> params) throws Unauthorized, NotStarted {
         User u = processRequest(params.getToken(), "start");
 
@@ -203,10 +209,10 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
             User user = userService.getUser(userName);
 
             if(user != null){
-                if(passwordService.correctPassword(password, user.getPassword())){
+                if(passwordService.correctPassword(password, user.getHashedPassword())){
                     String token = sessionService.addSession(user);
 
-                    serverLog("User: " + user.getEmail() + " was login and have token: " + token, user.getUserId());
+                    serverLog("User: " + user.getUsername() + " was login and have token: " + token, user.getUserId());
                     return token;
                 }
                 else{

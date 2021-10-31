@@ -8,7 +8,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "User", uniqueConstraints = {
         @UniqueConstraint(columnNames = "ID"),
-        @UniqueConstraint(columnNames = "EMAIL") })
+        @UniqueConstraint(columnNames = "Username") })
 public class User extends BaseEntity implements Serializable {
 
     private static final long serialVersionUID = -1798070786993154676L;
@@ -16,11 +16,11 @@ public class User extends BaseEntity implements Serializable {
     public User() {
     }
 
-    public User(String email, String firstName, String lastName, String hashedPassword) {
-        this.email = email;
+    public User(String username, String firstName, String lastName, String password) {
+        this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.password = hashedPassword;
+        this.hashedPassword = password;
     }
 
     @Id
@@ -28,8 +28,8 @@ public class User extends BaseEntity implements Serializable {
     @Column(name = "ID", unique = true, nullable = false)
     private Integer userId;
 
-    @Column(name = "Email", unique = true, nullable = false, length = 100)
-    private String email;
+    @Column(name = "Username", unique = true, nullable = false, length = 100)
+    private String username;
 
     @Column(name = "FirstName", unique = false, nullable = false, length = 100)
     private String firstName;
@@ -38,7 +38,7 @@ public class User extends BaseEntity implements Serializable {
     private String lastName;
 
     @Column(name = "Password", unique = false, nullable = false, length = 200)
-    private String password;
+    private String hashedPassword;
 
     public Integer getUserId() {
         return userId;
@@ -48,20 +48,20 @@ public class User extends BaseEntity implements Serializable {
         this.userId = userId;
     }
 
-    public String getPassword() {
-        return password;
+    public String getHashedPassword() {
+        return hashedPassword;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setHashedPassword(String password) {
+        this.hashedPassword = password;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String email) {
+        this.username = email;
     }
 
     public String getFirstName() {
@@ -82,9 +82,9 @@ public class User extends BaseEntity implements Serializable {
 
     @Override
     public String toString() {
-        return "EmployeeEntity{" +
+        return "User{" +
                 "userId=" + userId +
-                ", email='" + email + '\'' +
+                ", email='" + username + '\'' +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 '}';

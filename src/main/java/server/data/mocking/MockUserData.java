@@ -14,7 +14,13 @@ public class MockUserData implements IMockUserData {
     private IUserService userService;
 
     private ArrayList<User> users = new ArrayList<User>() {{
-        add(new User("t", "Troels","Lund", "1"));
+        add(new User("alice", "Alice","Doe", "Password123"));
+        add(new User("bob", "Bob","Doe", "Password123"));
+        add(new User("cecilia", "Cecilia","Doe", "Password123"));
+        add(new User("david", "David","Doe", "Password123"));
+        add(new User("erica", "Erica","Doe", "Password123"));
+        add(new User("fred", "Fred","Doe", "Password123"));
+        add(new User("george", "George","Doe", "Password123"));
     }};
 
     public MockUserData() {
@@ -24,8 +30,8 @@ public class MockUserData implements IMockUserData {
 
     public void createMockUsers(){
         for (User us: users) {
-            String email = us.getEmail();
-            String hashedPassword = passwordService.hashPassword(us.getPassword());
+            String email = us.getUsername();
+            String hashedPassword = passwordService.hashPassword(us.getHashedPassword());
             userService.deleteUser(email);
 
             int userId = userService.createUser(new User(

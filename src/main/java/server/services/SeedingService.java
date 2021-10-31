@@ -23,10 +23,10 @@ public class SeedingService implements ISeedingService {
     public void createMockUsers(){
 
         for (User us: users) {
-            String hql = "SELECT U.email FROM User U WHERE U.email = '" + us.getEmail() + "'";
+            String hql = "SELECT U.username FROM User U WHERE U.username = '" + us.getUsername() + "'";
             Query query = session.createQuery(hql).setFetchSize(1);
             if(query.list().size() == 0){
-                User u = new User(us.getEmail(), us.getFirstName(), us.getLastName(), us.getPassword());
+                User u = new User(us.getUsername(), us.getFirstName(), us.getLastName(), us.getHashedPassword());
                 session.saveOrUpdate(u);
             }
         }

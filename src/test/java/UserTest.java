@@ -40,7 +40,7 @@ public class UserTest {
         User u = userService.getUser(email);
 
         assertNotNull(userId);
-        assertEquals(email, u.getEmail());
-        assertEquals(hashedPassword, u.getPassword());
+        assertEquals(email, u.getUsername());
+        assertEquals(hashedPassword, u.getHashedPassword());
     }
 }

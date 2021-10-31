@@ -21,7 +21,7 @@ public class UserService implements IUserService {
     public User getUser(String email){
         try {
             session = HibernateUtil.getSessionFactory().openSession();
-            String hql = "SELECT U FROM User U WHERE U.email = '" + email + "'";
+            String hql = "SELECT U FROM User U WHERE U.username = '" + email + "'";
 
             Query<User> query = session.createQuery(hql);
             User user = query.getSingleResult();
