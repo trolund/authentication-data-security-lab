@@ -1,5 +1,6 @@
 import org.junit.jupiter.api.Test;
 import org.springframework.security.core.parameters.P;
+import server.AuthMethod;
 import server.PrintServer;
 import shared.DataPacked;
 import shared.dto.SetConfigParams;
@@ -12,7 +13,7 @@ public class anoTest {
 
     @Test
     public void test() throws NotStarted, Unauthorized, RemoteException {
-        PrintServer p = new PrintServer();
+        PrintServer p = new PrintServer(AuthMethod.policies);
         p.readConfig(new DataPacked("", "hej"));
     }
 }

@@ -1,52 +1,82 @@
 package server.services;
 
-import server.services.interfaces.IPolicyService;
-import shared.dto.Policy;
+import server.services.interfaces.IAuthService;
 import shared.dto.Roles;
-import shared.exceptions.Unauthorized;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Vector;
 
-public class PolicyService implements IPolicyService {
+public class PolicyService implements IAuthService {
 
     private String path = "";
-    private static List<Policy> policyList;
+    private static String[] actions;
+    private static List<Vector> userPolicies;
 
     public PolicyService(String path) {
         this.path = path;
+        userPolicies = new ArrayList<>();
     }
 
     @Override
-    public void getRoles(){
-        policyList = new ArrayList<>();
+    public void load(){
+        loadPolicies();
+
+        for (Vector v: userPolicies) {
+            System.out.println(v.get(0) + " : " + v.get(1));
+        }
+    }
+
+    private void loadPolicies(){
+        userPolicies = new ArrayList<>();
         try {
+            boolean first = true;
             File myObj = new File(path);
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
-                String[] parts = data.split(" ");
-                String un = parts[0];
-                String ro = parts[1];
-
-                Roles r = StringToRole(ro);
-                if(!r.equals("none")){
-                    policyList.add(new Policy(un, r));
-                }else{
-                    System.out.println("role [" + r + "] was not recognized");
+                String[] parts = data.split(";");
+                if(first){
+                    actions = parts;
+                    first = false;
+                }else {
+                    String user = null;
+                    for (int i = 0; i < actions.length; i++) {
+                        if(i == 0){
+                            user = parts[i];
+                        }else {
+                            boolean haveAccess = parts[i].equals("1");
+                            if(haveAccess){
+                                String action = actions[i];
+                                Vector v = new Vector();
+                                v.add(user);
+                                v.add(action);
+                                userPolicies.add(v);
+                            }
+                        }
+                    }
                 }
             }
             myReader.close();
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
-    public void haveAllRolesThrow(String username, Roles[] roles) throws Unauthorized {
+    @Override
+    public boolean haveAccess(String username, String action) {
+        return userPolicies.stream()
+                .anyMatch(p -> ((String )p.get(0)).equalsIgnoreCase(username)
+                               && ((String )p.get(1)).equalsIgnoreCase(action));
+    }
+
+/*    public void haveAllRolesThrow(String username, Roles[] roles) throws Unauthorized {
         if(!haveAllRoles(username, roles)){
             throw new Unauthorized("User does not have all thise roles: " + roles.toString());
         }
@@ -64,17 +94,14 @@ public class PolicyService implements IPolicyService {
         }
     }
 
-    @Override
     public boolean haveAllRoles(String username, Roles[] roles){
         return policyList.stream().allMatch(x -> haveRole(username, x.role));
     }
 
-    @Override
     public boolean haveSomeRoles(String username, Roles[] roles){
         return policyList.stream().anyMatch(x -> haveRole(username, x.role));
     }
 
-    @Override
     public boolean haveRole(String username, Roles role){
         for (Policy p: policyList) {
             if(p.username.equals(username) && p.role.equals(role)){
@@ -83,9 +110,9 @@ public class PolicyService implements IPolicyService {
         }
 
         return false;
-    }
+    }*/
 
-    public Roles StringToRole(String r){
+    public Roles StringToRole(String r) throws Exception {
         switch (r){
             case "admin" -> {
                 return Roles.ADMIN;
@@ -100,7 +127,7 @@ public class PolicyService implements IPolicyService {
                 return Roles.BASIC;
             }
             default -> {
-                return Roles.NONE;
+                throw new Exception("String is not a role.");
             }
         }
     }

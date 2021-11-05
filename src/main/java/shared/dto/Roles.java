@@ -4,23 +4,22 @@ public enum Roles {
     ADMIN, // Alice is managing the print server
     TECHNICIAN,
     POWER_USER,
-    BASIC, // basic users
-    NONE;
+    BASIC; // basic users
 
     @Override
     public String toString() {
         switch (this){
             case ADMIN: {
-                return "admin";
+                return "Admin";
             }
             case TECHNICIAN: {
-                return "technician";
+                return "Technician";
             }
             case POWER_USER: {
-                return "power_user";
+                return "PowerUser";
             }
             case BASIC: {
-                return "basic";
+                return "Basic";
             }
             default: {
                 return "none";

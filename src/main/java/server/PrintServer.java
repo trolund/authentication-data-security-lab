@@ -4,7 +4,7 @@ import javassist.NotFoundException;
 import server.anotations.WithRoles;
 import server.data.mocking.IMockUserData;
 import server.data.mocking.MockUserData;
-import server.services.interfaces.IPolicyService;
+import server.services.interfaces.IAuthService;
 import shared.dto.Job;
 import server.data.models.Session;
 import server.data.models.User;
@@ -35,10 +35,12 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
     private final HashMap<String, String> config;
     private final List<IPrinter> printers;
     private final ILogService logService;
-    private final IPolicyService policyService;
+    private final IAuthService policyService;
     private static boolean isStarted = false;
+    private AuthMethod authMethod;
 
-    public PrintServer() throws RemoteException {
+    public PrintServer(AuthMethod authMethod) throws RemoteException {
+        this.authMethod = authMethod;
         userService = new UserService();
         passwordService = new PasswordService();
         sessionService = new SessionService();
@@ -46,8 +48,8 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
         inMemoryLog = new ArrayList();
         config = new HashMap<>();
         printers = new ArrayList<>();
-        policyService = new PolicyService("src/main/java/server/policy.json");
-        policyService.getRoles();
+        policyService = new PolicyService("src/main/java/server/userRoles.csv");
+        policyService.load();
 
         setupPrinters();
 

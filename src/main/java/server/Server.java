@@ -19,6 +19,17 @@ public class Server {
     public static String url = "rmi://" + domain + ":" + port + "/" + serviceName;
 
     public static void main(String[] arg) throws Exception {
+
+        AuthMethod authMethod = null;
+
+        if(arg[0] != null && arg[0].equals("roles")){
+            authMethod = AuthMethod.Roles;
+            System.out.print(Colors.ANSI_GREEN + "print-server config to use: roles" + Colors.ANSI_RESET);
+        }else{
+            authMethod = AuthMethod.policies;
+            System.out.print(Colors.ANSI_GREEN + "print-server config to use: policies" + Colors.ANSI_RESET);
+        }
+
         // Secure channel factories
         SslClientSocketFactory csf = new SslClientSocketFactory("client", "clientpw");
         SslServerSocketFactory ssf = new SslServerSocketFactory("registry", "registrypw");
@@ -26,7 +37,7 @@ public class Server {
         Registry registry = LocateRegistry.createRegistry(port, csf, ssf);
 
         // create server object
-        IPrintServer service = new PrintServer();
+        IPrintServer service = new PrintServer(authMethod);
 
         // bind service
         registry.rebind(url, service);

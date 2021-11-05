@@ -1,0 +1,8 @@
+﻿Names;Print;Queue;TopQueue;Start;Stop;Restart;Status;ReadConfig;SetConfig
+Alice;1;1;1;1;1;1;1;1;1
+Bob;1;0;0;1;1;1;1;1;1
+Cecilia;1;1;1;0;0;1;0;0;0
+David;1;1;0;0;0;0;0;0;0
+Erica;1;1;0;0;0;0;0;0;0
+Fred;1;1;0;0;0;0;0;0;0
+George;1;1;0;0;0;0;0;0;0

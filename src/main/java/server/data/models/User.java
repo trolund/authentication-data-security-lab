@@ -1,9 +1,12 @@
 package server.data.models;
 
+import shared.dto.Roles;
+
 import javax.persistence.*;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Table(name = "User", uniqueConstraints = {
@@ -39,6 +42,9 @@ public class User extends BaseEntity implements Serializable {
 
     @Column(name = "Password", unique = false, nullable = false, length = 200)
     private String hashedPassword;
+
+    @OneToMany(mappedBy="User")
+    private Set<UserRole> userRoles;
 
     public Integer getUserId() {
         return userId;
