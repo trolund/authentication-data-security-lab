@@ -8,7 +8,6 @@ import java.io.FileNotFoundException;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class RolesService implements IAuthService {
 
@@ -128,44 +127,7 @@ public class RolesService implements IAuthService {
         });
     }
 
-/*
-    public void haveAllRolesThrow(String username, Roles[] roles) throws Unauthorized {
-        if(!haveAllRoles(username, roles)){
-            throw new Unauthorized("User does not have all thise roles: " + roles.toString());
-        }
-    }
-
-    public void haveSomeRolesThrow(String username, Roles[] roles) throws Unauthorized {
-        if(!haveSomeRoles(username, roles)){
-            throw new Unauthorized("User does not have any of thise roles: " + roles.toString());
-        }
-    }
-
-    public void haveRoleThrow(String username, Roles role) throws Unauthorized {
-        if(!haveRole(username, role)){
-            throw new Unauthorized("User does not have the role: " + role.toString());
-        }
-    }
-
-    public boolean haveAllRoles(String username, Roles[] roles){
-        return .stream().allMatch(x -> haveRole(username, x.role));
-    }
-
-    public boolean haveSomeRoles(String username, Roles[] roles){
-        return .stream().anyMatch(x -> haveRole(username, x.role));
-    }
-
-    public boolean haveRole(String username, Roles role){
-        for (Policy p: ) {
-            if(p.username.equals(username) && p.role.equals(role)){
-                return true;
-            }
-        }
-
-        return false;
-    }*/
-
-    public Roles StringToRole(String r) throws Exception {
+    public Roles StringToRole(String r) {
         String s = r.toLowerCase();
         if(s.equals("admin")) {
             return Roles.ADMIN;
