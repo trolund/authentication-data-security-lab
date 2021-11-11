@@ -48,14 +48,25 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
         inMemoryLog = new ArrayList();
         config = new HashMap<>();
         printers = new ArrayList<>();
-        policyService = new PolicyService("src/main/java/server/userRoles.csv");
-        policyService.load();
+
+        policyService = setupAuthService();
 
         setupPrinters();
 
         // seeding user data
         IMockUserData mockUserData = new MockUserData();
         mockUserData.createMockUsers();
+    }
+
+    private IAuthService setupAuthService() {
+        final IAuthService policyService;
+        if(authMethod == AuthMethod.policies){
+            policyService = new PolicyService("src/main/java/server/userRoles.csv");
+        } else {
+            policyService = new RolesService("src/main/java/server/");
+        }
+        policyService.load();
+        return policyService;
     }
 
     // done
@@ -112,6 +123,7 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
         }
 
         isStarted = true;
+        setupAuthService();
         serverLog("startet print server", u.getUserId());
     }
 
@@ -151,6 +163,7 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
             resetQueues();
             Thread.sleep(2000);
             isStarted = true;
+            setupAuthService();
             serverLog("Printer have restarted.", u.getUserId());
         } catch (InterruptedException e) {
             e.printStackTrace();
