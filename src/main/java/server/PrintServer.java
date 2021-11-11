@@ -61,7 +61,7 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
     private IAuthService setupAuthService() {
         final IAuthService policyService;
         if(authMethod == AuthMethod.policies){
-            policyService = new PolicyService("src/main/java/server/userRoles.csv");
+            policyService = new PolicyService("src/main/java/server/policies.csv");
         } else {
             policyService = new RolesService("src/main/java/server/");
         }
