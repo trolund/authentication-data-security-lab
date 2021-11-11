@@ -1,3 +1,4 @@
+/*
 package server.data.models;
 
 import javax.persistence.*;
@@ -16,3 +17,4 @@ public class UserRole extends BaseEntity implements Serializable {
     @JoinColumn(name = "UserID")
     private User user;
 }
+*/
