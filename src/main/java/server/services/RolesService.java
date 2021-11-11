@@ -1,91 +1,107 @@
 package server.services;
 
 import server.services.interfaces.IAuthService;
-import shared.dto.Roles;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Scanner;
 
 public class RolesService implements IAuthService {
 
-    private String path = "";
-    private static List<Vector> rolesList;
-    private static List<Vector> mapping;
+    private final String path;
+
+    private static HashMap<String, List<String>> userRoles; // username -> roles
+    private static HashMap<String, List<String>> capabilityRoles; // capability -> roles
     private static String[] actions;
 
-
+    /**
+     * @param path Path to where the roles.csv and rolesActions.csv is located
+     */
     public RolesService(String path) {
         this.path = path;
+        load();
     }
 
     @Override
-    public void load(){
+    public void load() {
+        userRoles = new HashMap<>();
+        capabilityRoles = new HashMap<>();
+
         loadUserRoles();
-        loadMappings();
+        loadRoleCapabilities();
     }
 
-    private void loadUserRoles(){
-        rolesList = new ArrayList<>();
+    private void loadUserRoles() {
         try {
             File myObj = new File(path + "roles.csv");
-            Scanner myReader = new Scanner(myObj);
+            Scanner myReader = new Scanner(myObj, StandardCharsets.UTF_8);
+
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
-                String[] parts = data.split(";");
-                String un = parts[1];
-                String ro = parts[0];
 
-                Roles r = null;
-                try {
-                    r = StringToRole(ro);
-                    Vector v = new Vector();
-                    v.add(un);
-                    v.add(ro);
-                    rolesList.add(v);
-                } catch (Exception e) {
-                    System.out.println("role [" + r + "] was not recognized");
+                String[] parts = data.split(";");
+                String role = parts[0];
+                String userName = parts[1];
+
+                if (userRoles.containsKey(userName)) {
+                    var roles = userRoles.get(userName);
+                    roles.add(role);
+                    userRoles.replace(userName, roles);
+                } else {
+                    var roles = new ArrayList<String>();
+                    roles.add(role);
+                    userRoles.put(userName, roles);
                 }
             }
             myReader.close();
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    private void loadMappings(){
-        mapping = new ArrayList<>();
+    private void loadRoleCapabilities() {
         try {
             boolean first = true;
             File myObj = new File(path + "rolesActions.csv");
-            Scanner myReader = new Scanner(myObj);
+            Scanner myReader = new Scanner(myObj, StandardCharsets.UTF_8);
+
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
                 String[] parts = data.split(";");
-                if(first){
+                if (first) {
                     actions = parts;
                     first = false;
-                }else {
+                } else {
                     String role = null;
                     for (int i = 0; i < actions.length; i++) {
-                        if(i == 0){
+                        if (i == 0) {
                             role = parts[i];
-                        }else {
+                        } else {
                             boolean haveAccess = parts[i].equals("1");
-                            if(haveAccess){
-                                String action = actions[i];
-                                Vector v = new Vector();
-                                v.add(role);
-                                v.add(action);
-                                mapping.add(v);
+                            if (haveAccess) {
+                                if (capabilityRoles.containsKey(actions[i])) {
+                                    var roles = capabilityRoles.get(actions[i]);
+                                    roles.add(role);
+                                    capabilityRoles.replace(actions[i], roles);
+                                } else {
+                                    var roles = new ArrayList<String>();
+                                    roles.add(role);
+                                    capabilityRoles.put(actions[i], roles);
+                                }
                             }
                         }
                     }
                 }
             }
+
             myReader.close();
         } catch (FileNotFoundException e) {
             System.out.println("An error occurred.");
@@ -95,48 +111,17 @@ public class RolesService implements IAuthService {
         }
     }
 
-   @Override
+    @Override
     public boolean haveAccess(String username, String action) {
-       List<String> userRoles = rolesList
-               .stream()
-               .filter(rp -> rp.get(0).toString().equalsIgnoreCase(username.toLowerCase()))
-               .map(x -> x.get(1).toString())
-               .collect(Collectors.toList());
+        var userRole = userRoles.get(username);
+        var role = capabilityRoles.get(action);
 
-       List<String> allowedRoles = mapping.stream()
-               .filter(m -> m.get(1).toString().equalsIgnoreCase(action.toLowerCase()))
-               .map(x -> x.get(0).toString())
-               .collect(Collectors.toList());
-
-       Set<String> result = allowedRoles.stream()
-               .filter(v -> contains(userRoles, v))
-               .collect(Collectors.toSet());
-
-       return true;
-    }
-
-    private boolean contains(List<String> list, String match){
-        return list.stream().anyMatch(x -> {
-
-            byte[] bytes = x.getBytes(StandardCharsets.UTF_8);
-            byte[] bytes2 = match.getBytes(StandardCharsets.UTF_8);
-            String utf8EncodedString = new String(bytes, StandardCharsets.UTF_8);
-            String utf8EncodedString2 = new String(bytes2, StandardCharsets.UTF_8);
-
-            return utf8EncodedString2.equalsIgnoreCase(utf8EncodedString);
-        });
-    }
-
-    public Roles StringToRole(String r) {
-        String s = r.toLowerCase();
-        if(s.equals("admin")) {
-            return Roles.ADMIN;
-        }else if(s.equals("technician")){
-            return Roles.TECHNICIAN;
-        } else if(r.equals("poweruser")) {
-            return Roles.POWER_USER;
-        }else{
-            return Roles.BASIC;
+        for (String r : userRole) {
+            if (role.contains(r)) {
+                return true;
+            }
         }
+
+        return false;
     }
 }
