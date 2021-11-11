@@ -1,7 +1,6 @@
 package server.services;
 
 import server.services.interfaces.IAuthService;
-import shared.dto.Roles;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -74,61 +73,5 @@ public class PolicyService implements IAuthService {
         return userPolicies.stream()
                 .anyMatch(p -> ((String )p.get(0)).equalsIgnoreCase(username)
                                && ((String )p.get(1)).equalsIgnoreCase(action));
-    }
-
-/*    public void haveAllRolesThrow(String username, Roles[] roles) throws Unauthorized {
-        if(!haveAllRoles(username, roles)){
-            throw new Unauthorized("User does not have all thise roles: " + roles.toString());
-        }
-    }
-
-    public void haveSomeRolesThrow(String username, Roles[] roles) throws Unauthorized {
-        if(!haveSomeRoles(username, roles)){
-            throw new Unauthorized("User does not have any of thise roles: " + roles.toString());
-        }
-    }
-
-    public void haveRoleThrow(String username, Roles role) throws Unauthorized {
-        if(!haveRole(username, role)){
-            throw new Unauthorized("User does not have the role: " + role.toString());
-        }
-    }
-
-    public boolean haveAllRoles(String username, Roles[] roles){
-        return policyList.stream().allMatch(x -> haveRole(username, x.role));
-    }
-
-    public boolean haveSomeRoles(String username, Roles[] roles){
-        return policyList.stream().anyMatch(x -> haveRole(username, x.role));
-    }
-
-    public boolean haveRole(String username, Roles role){
-        for (Policy p: policyList) {
-            if(p.username.equals(username) && p.role.equals(role)){
-                return true;
-            }
-        }
-
-        return false;
-    }*/
-
-    public Roles StringToRole(String r) throws Exception {
-        switch (r){
-            case "admin" -> {
-                return Roles.ADMIN;
-            }
-            case "technician" -> {
-                return Roles.TECHNICIAN;
-            }
-            case "power_user" -> {
-                return Roles.POWER_USER;
-            }
-            case "basic" -> {
-                return Roles.BASIC;
-            }
-            default -> {
-                throw new Exception("String is not a role.");
-            }
-        }
     }
 }
