@@ -1,13 +1,10 @@
 package server;
 
-
 import server.transport.SslClientSocketFactory;
 import server.transport.SslServerSocketFactory;
 import shared.Colors;
-import shared.DataPacked;
 import shared.IPrintServer;
 
-import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
@@ -20,14 +17,17 @@ public class Server {
 
     public static void main(String[] arg) throws Exception {
 
-        AuthMethod authMethod = null;
+        AuthMethod authMethod;
 
-        if(arg[0] != null && arg[0].equals("roles")){
+        if (arg.length > 0 && arg[0].equals("acl")) {
             authMethod = AuthMethod.Roles;
-            System.out.print(Colors.ANSI_GREEN + "print-server config to use: roles" + Colors.ANSI_RESET);
-        }else{
+            System.out.println(Colors.ANSI_GREEN + "print-server config to use: roles" + Colors.ANSI_RESET);
+        } else if (arg.length > 0 && arg[0].equals("rbac")) {
             authMethod = AuthMethod.policies;
-            System.out.print(Colors.ANSI_GREEN + "print-server config to use: policies" + Colors.ANSI_RESET);
+            System.out.println(Colors.ANSI_GREEN + "print-server config to use: policies" + Colors.ANSI_RESET);
+        } else {
+            System.out.println(Colors.ANSI_RED + "print-server config to use: policies (default)" + Colors.ANSI_RESET);
+            authMethod = AuthMethod.policies;
         }
 
         // Secure channel factories

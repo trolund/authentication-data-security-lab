@@ -1,8 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Server" type="Application" factoryName="Application" nameIsGenerated="true">
     <option name="MAIN_CLASS_NAME" value="server.Server" />
-    <module name="AuthenticationLab2" />
-    <option name="PROGRAM_PARAMETERS" value="roles" />
+    <module name="AuthenticationLab" />
+    <option name="PROGRAM_PARAMETERS" value="acl" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="server.*" />
