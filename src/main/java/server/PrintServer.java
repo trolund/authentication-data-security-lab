@@ -35,7 +35,7 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
     private final HashMap<String, String> config;
     private final List<IPrinter> printers;
     private final ILogService logService;
-    private final IAuthService policyService;
+    private final IAuthService authService;
     private static boolean isStarted = false;
     private AuthMethod authMethod;
 
@@ -49,7 +49,9 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
         config = new HashMap<>();
         printers = new ArrayList<>();
 
-        policyService = setupAuthService();
+        authService = setupAuthService();
+        authService.load();
+
 
         setupPrinters();
 
@@ -59,14 +61,13 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
     }
 
     private IAuthService setupAuthService() {
-        final IAuthService policyService;
-        if(authMethod == AuthMethod.policies){
-            policyService = new PolicyService("src/main/java/server/policies.csv");
+        final IAuthService authService;
+        if(authMethod == AuthMethod.ACL){
+            authService = new ACLService("src/main/java/server/policies.csv");
         } else {
-            policyService = new RolesService("src/main/java/server/");
+            authService = new RBACService("src/main/java/server/");
         }
-        policyService.load();
-        return policyService;
+        return authService;
     }
 
     // done
@@ -274,7 +275,7 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
         serverLog(msg, userID,false);
     }
 
-    private User processRequest(String token, String msg) throws Unauthorized, NotStarted {
+    private User processRequest(String token, String command) throws Unauthorized, NotStarted {
         if(token == null || token.length() == 0){
             serverLog("No token was given", -1, true);
             throw new Unauthorized("No token was given");
@@ -283,7 +284,7 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
         Session s = sessionService.getValidSession(token);
         try{
 
-            if(!isStarted & msg != "start"){
+            if(!isStarted & command != "start"){
                 String logMsg = "Server have NOT been started. please run the start command.";
                 serverLog(logMsg, s.getUser().getUserId(), true);
                 throw new NotStarted(logMsg);
@@ -295,15 +296,19 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
                 throw new Unauthorized("Invalid token, token: " + token);
             }
 
+            if(authService.haveAccess( s.getUser().getUsername(), command) == false){
+                throw new Unauthorized("Unauthorized access to command: " + command);
+            }
+
             // log user activity
-            serverLog(msg, s.getUser().getUserId());
+            serverLog(command, s.getUser().getUserId());
 
             return s.getUser();
         }catch (NotStarted e){
-            serverLog(msg + " failed because the server have not been started", s.getUser().getUserId(), true);
+            serverLog(command + " failed because the server have not been started", s.getUser().getUserId(), true);
             throw e;
         }catch (Unauthorized e){
-            serverLog(msg + " failed because the user was unauthorized", s.getUser().getUserId(), true);
+            serverLog(command + " failed because the user was unauthorized", s.getUser().getUserId(), true);
             throw e;
         }
     }

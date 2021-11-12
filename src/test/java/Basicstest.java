@@ -10,7 +10,7 @@ public class Basicstest {
     @Test
     void printTest() {
         try{
-            PrintServer printServer = new PrintServer(AuthMethod.policies);
+            PrintServer printServer = new PrintServer(AuthMethod.RBAC);
             Cli cli = new Cli(printServer);
 
             cli.Command("print -f filename.pdf -p office_printer");

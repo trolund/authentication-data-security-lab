@@ -20,14 +20,14 @@ public class Server {
         AuthMethod authMethod;
 
         if (arg.length > 0 && arg[0].equals("acl")) {
-            authMethod = AuthMethod.Roles;
-            System.out.println(Colors.ANSI_GREEN + "print-server config to use: roles" + Colors.ANSI_RESET);
+            authMethod = AuthMethod.ACL;
+            System.out.println(Colors.ANSI_GREEN + "print-server config to use: ACL" + Colors.ANSI_RESET);
         } else if (arg.length > 0 && arg[0].equals("rbac")) {
-            authMethod = AuthMethod.policies;
-            System.out.println(Colors.ANSI_GREEN + "print-server config to use: policies" + Colors.ANSI_RESET);
+            authMethod = AuthMethod.RBAC;
+            System.out.println(Colors.ANSI_GREEN + "print-server config to use: RBAC" + Colors.ANSI_RESET);
         } else {
-            System.out.println(Colors.ANSI_RED + "print-server config to use: policies (default)" + Colors.ANSI_RESET);
-            authMethod = AuthMethod.policies;
+            System.out.println(Colors.ANSI_RED + "print-server config to use: RBAC (default)" + Colors.ANSI_RESET);
+            authMethod = AuthMethod.RBAC;
         }
 
         // Secure channel factories
