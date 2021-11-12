@@ -9,13 +9,13 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.Vector;
 
-public class PolicyService implements IAuthService {
+public class ACLService implements IAuthService {
 
     private String path = "";
     private static String[] actions;
     private static List<Vector> userPolicies;
 
-    public PolicyService(String path) {
+    public ACLService(String path) {
         this.path = path;
         userPolicies = new ArrayList<>();
     }

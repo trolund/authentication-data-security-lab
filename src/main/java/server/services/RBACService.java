@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
-public class RolesService implements IAuthService {
+public class RBACService implements IAuthService {
 
     private final String path;
 
@@ -22,7 +22,7 @@ public class RolesService implements IAuthService {
     /**
      * @param path Path to where the roles.csv and rolesActions.csv is located
      */
-    public RolesService(String path) {
+    public RBACService(String path) {
         this.path = path;
         load();
     }
