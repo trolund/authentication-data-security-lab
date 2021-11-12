@@ -1,4 +1,4 @@
-Role;Print;Queue;TopQueue;Start;Stop;Restart;Status;ReadConfig;SetConfig
+Role;print;queue;topQueue;start;stop;restart;status;readConfig;setConfig
 Admin;1;1;1;1;1;1;1;1;1
 Technician;1;0;0;1;1;1;1;1;1
 PowerUser;1;1;1;0;0;1;0;0;0

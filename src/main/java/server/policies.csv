@@ -1,4 +1,4 @@
-Names;Print;Queue;TopQueue;Start;Stop;Restart;Status;ReadConfig;SetConfig
+Names;print;queue;topQueue;start;stop;restart;status;readConfig;setConfig
 Alice;1;1;1;1;1;1;1;1;1
 Bob;1;0;0;1;1;1;1;1;1
 Cecilia;1;1;1;0;0;1;0;0;0
