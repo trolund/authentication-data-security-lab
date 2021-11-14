@@ -4,33 +4,25 @@ import server.services.interfaces.IAuthService;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Vector;
+import java.util.*;
 
 public class ACLService implements IAuthService {
 
     private String path = "";
     private static String[] actions;
-    private static List<Vector> userPolicies;
+    private static HashMap<String, List<String>> userActionRights; // username -> action[]
 
     public ACLService(String path) {
         this.path = path;
-        userPolicies = new ArrayList<>();
     }
 
     @Override
     public void load(){
         loadPolicies();
-
-        for (Vector v: userPolicies) {
-            System.out.println(v.get(0) + " : " + v.get(1));
-        }
     }
 
     private void loadPolicies(){
-        userPolicies = new ArrayList<>();
+        userActionRights = new HashMap<>();
         try {
             boolean first = true;
             File myObj = new File(path);
@@ -43,20 +35,19 @@ public class ACLService implements IAuthService {
                     first = false;
                 }else {
                     String user = null;
+                    List<String> allowedActions = new ArrayList<>();
                     for (int i = 0; i < actions.length; i++) {
+
                         if(i == 0){
                             user = parts[i];
                         }else {
                             boolean haveAccess = parts[i].equals("1");
                             if(haveAccess){
-                                String action = actions[i];
-                                Vector v = new Vector();
-                                v.add(user);
-                                v.add(action);
-                                userPolicies.add(v);
+                                allowedActions.add(actions[i]);
                             }
                         }
                     }
+                    userActionRights.put(user, allowedActions);
                 }
             }
             myReader.close();
@@ -70,8 +61,11 @@ public class ACLService implements IAuthService {
 
     @Override
     public boolean haveAccess(String username, String action) {
-        return userPolicies.stream()
-                .anyMatch(p -> ((String )p.get(0)).equalsIgnoreCase(username)
-                               && ((String )p.get(1)).equalsIgnoreCase(action));
+        var list = userActionRights.get(username);
+        if (list.contains(action)){
+            return true;
+        } else {
+            return false;
+        }
     }
 }

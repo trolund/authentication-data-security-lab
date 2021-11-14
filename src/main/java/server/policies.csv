@@ -1,8 +1,8 @@
 Names;print;queue;topQueue;start;stop;restart;status;readConfig;setConfig
-Alice;1;1;1;1;1;1;1;1;1
-Bob;1;0;0;1;1;1;1;1;1
-Cecilia;1;1;1;0;0;1;0;0;0
-David;1;1;0;0;0;0;0;0;0
-Erica;1;1;0;0;0;0;0;0;0
-Fred;1;1;0;0;0;0;0;0;0
-George;1;1;0;0;0;0;0;0;0
+alice;1;1;1;1;1;1;1;1;1
+bob;1;0;0;1;1;1;1;1;1
+cecilia;1;1;1;0;0;1;0;0;0
+david;1;1;0;0;0;0;0;0;0
+erica;1;1;0;0;0;0;0;0;0
+fred;1;1;0;0;0;0;0;0;0
+george;1;1;0;0;0;0;0;0;0

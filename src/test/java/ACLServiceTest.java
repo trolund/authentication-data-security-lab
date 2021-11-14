@@ -10,8 +10,8 @@ public class ACLServiceTest {
         ACLService service = new ACLService("src/main/java/server/policies.csv");
         service.load();
 
-        assertTrue(service.haveAccess("Bob", "Print"));
-        assertFalse(service.haveAccess("Bob", "Queue"));
+        assertTrue(service.haveAccess("bob", "print"));
+        assertFalse(service.haveAccess("bob", "queue"));
     }
 
     @Test
@@ -19,7 +19,7 @@ public class ACLServiceTest {
         RBACService service = new RBACService("src/main/java/server/");
         service.load();
 
-        assertTrue(service.haveAccess("Bob", "Print"));
-        assertFalse(service.haveAccess("Bob", "Queue"));
+        assertTrue(service.haveAccess("bob", "print"));
+        assertFalse(service.haveAccess("bob", "queue"));
     }
 }
