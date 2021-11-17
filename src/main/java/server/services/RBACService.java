@@ -116,6 +116,10 @@ public class RBACService implements IAuthService {
         var userRole = userRoles.get(username);
         var role = capabilityRoles.get(action);
 
+        if((userRole == null) || (role == null)){
+            return false;
+        }
+
         for (String r : userRole) {
             if (role.contains(r)) {
                 return true;
