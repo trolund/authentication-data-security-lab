@@ -68,7 +68,6 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
         return authService;
     }
 
-    // done
     @Override
     public synchronized void print(DataPacked<PrintParams> params) throws Unauthorized, NotFoundException, NotStarted {
         User u = processRequest(params.getToken(), "print");
@@ -112,7 +111,6 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
         printer.moveOnTop(params.getPayload().getJob());
     }
 
-    // done
     @Override
     public synchronized void start(DataPacked<Object> params) throws Unauthorized, NotStarted {
         User u = processRequest(params.getToken(), "start");
@@ -126,7 +124,6 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
         serverLog("startet print server", u.getUserId());
     }
 
-    // done
     @Override
     public synchronized void stop(DataPacked<Object> params) throws Unauthorized, NotStarted {
         User u = processRequest(params.getToken(), "stop");
@@ -148,7 +145,6 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
         });
     }
 
-    // done
     @Override
     public synchronized void restart(DataPacked<Object> params) throws Unauthorized, NotStarted {
         User u = processRequest(params.getToken(), "restart");
@@ -181,7 +177,6 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
         return printer.getStatus();
     }
 
-    // done
     @Override
     public synchronized String readConfig(DataPacked<String> params) throws Unauthorized, NotStarted {
         User u = processRequest(params.getToken(), "start");
@@ -196,7 +191,6 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
         return conf;
     }
 
-    // done
     @Override
     public synchronized void setConfig(DataPacked<SetConfigParams> params) throws Unauthorized, NotStarted {
         User u = processRequest(params.getToken(), "setConfig");
@@ -213,7 +207,6 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
                 u.getUserId());
     }
 
-    // done
     @Override
     public synchronized String login(DataPacked<Credentials> params) throws NotFoundException, Unauthorized {
             String userName = params.getPayload().getUsername();
