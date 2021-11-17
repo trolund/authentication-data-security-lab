@@ -21,6 +21,8 @@ public class MockUserData implements IMockUserData {
         add(new User("erica", "Erica","Doe", "Password123"));
         add(new User("fred", "Fred","Doe", "Password123"));
         add(new User("george", "George","Doe", "Password123"));
+        add(new User("henry", "Henry","Doe", "Password123"));
+        add(new User("ida", "Ida","Doe", "Password123"));
     }};
 
     public MockUserData() {
