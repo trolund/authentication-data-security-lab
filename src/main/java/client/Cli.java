@@ -2,7 +2,7 @@ package client;
 
 import javassist.NotFoundException;
 import shared.Colors;
-import shared.Credentials;
+import shared.dto.Credentials;
 import shared.DataPacked;
 import shared.IPrintServer;
 import shared.dto.*;
@@ -56,7 +56,7 @@ public class Cli {
         }
     }
 
-    public void Command(String command) throws RemoteException, Unauthorized, NotFoundException, NotStarted {
+    public void Command(String command) throws Exception {
 
         String[] args = command.split(" ");
         switch (args[0]){

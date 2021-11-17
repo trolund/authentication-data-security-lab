@@ -4,6 +4,7 @@ public enum Roles {
     ADMIN, // Alice is managing the print server
     TECHNICIAN,
     POWER_USER,
+    MAINTAINER,
     BASIC; // basic users
 
     @Override
@@ -17,6 +18,9 @@ public enum Roles {
             }
             case POWER_USER: {
                 return "PowerUser";
+            }
+            case MAINTAINER: {
+                return "Maintainer";
             }
             case BASIC: {
                 return "Basic";

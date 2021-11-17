@@ -43,9 +43,6 @@ public class User extends BaseEntity implements Serializable {
     @Column(name = "Password", unique = false, nullable = false, length = 200)
     private String hashedPassword;
 
-//    @OneToMany(mappedBy="User")
-//    private Set<UserRole> userRoles;
-
     public Integer getUserId() {
         return userId;
     }

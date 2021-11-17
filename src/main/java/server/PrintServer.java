@@ -1,7 +1,6 @@
 package server;
 
 import javassist.NotFoundException;
-import server.anotations.WithRoles;
 import server.data.mocking.IMockUserData;
 import server.data.mocking.MockUserData;
 import server.services.interfaces.IAuthService;
@@ -14,7 +13,7 @@ import server.services.*;
 import server.services.interfaces.ILogService;
 import server.services.interfaces.ISessionService;
 import server.services.interfaces.IUserService;
-import shared.Credentials;
+import shared.dto.Credentials;
 import shared.DataPacked;
 import shared.IPrintServer;
 import shared.dto.*;
@@ -51,7 +50,6 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
 
         authService = setupAuthService();
         authService.load();
-
 
         setupPrinters();
 
@@ -185,7 +183,6 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
 
     // done
     @Override
-    @WithRoles(roles = {"Admin"})
     public synchronized String readConfig(DataPacked<String> params) throws Unauthorized, NotStarted {
         User u = processRequest(params.getToken(), "start");
 
@@ -266,9 +263,16 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
     }
 
     @Override
-    public synchronized void logout(DataPacked<Object> params) throws NotStarted, Unauthorized {
-        processRequest(params.getToken(), "logout");
-        sessionService.endSession(params.getToken());
+    public synchronized void logout(DataPacked<Object> params) throws Exception {
+        Session s = sessionService.getValidSession(params.getToken());
+
+        if(s != null){
+            sessionService.endSession(params.getToken());
+            serverLog("logout user", s.getUser().getUserId(), true);
+        }else{
+            serverLog("Failed to logout user", -1, true);
+            throw new Exception("Failed to logout");
+        }
     }
 
     private void serverLog(String msg, int userID){
@@ -292,11 +296,11 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
 
             // check users sessionID.
             if(s == null){
-                serverLog("Invalid token, token: " + token, s.getUser().getUserId(), true);
+                serverLog("Invalid token, token: " + token, -1, true);
                 throw new Unauthorized("Invalid token, token: " + token);
             }
 
-            if(authService.haveAccess( s.getUser().getUsername(), command) == false){
+            if(!authService.haveAccess(s.getUser().getUsername(), command)){
                 throw new Unauthorized("Unauthorized access to command: " + command);
             }
 
@@ -308,7 +312,7 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
             serverLog(command + " failed because the server have not been started", s.getUser().getUserId(), true);
             throw e;
         }catch (Unauthorized e){
-            serverLog(command + " failed because the user was unauthorized", s.getUser().getUserId(), true);
+            serverLog(command + " failed because the user was unauthorized", s == null ? -1 : s.getUser().getUserId(), true);
             throw e;
         }
     }
