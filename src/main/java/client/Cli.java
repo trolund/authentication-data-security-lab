@@ -28,15 +28,11 @@ public class Cli {
     public void beginCliSession(){
         Scanner input = new Scanner(System.in);
 
-        System.out.println(Colors.ANSI_CYAN + "Skip login? [y: yes, n: no]: " + Colors.ANSI_RESET);
-        boolean skip = input.nextLine().equals("y");
-
-        if(!skip){
-            System.out.println(Colors.ANSI_CYAN + "Print-server login: " + Colors.ANSI_RESET);
-            while (!login(input));
-        }
-
         System.out.println(Colors.ANSI_CYAN + "Welcome to the print server CLI interface: " + Colors.ANSI_RESET);
+
+        System.out.println(Colors.ANSI_CYAN + "Print-server login: " + Colors.ANSI_RESET);
+        while (!login(input));
+
         while (true){
             try {
                 Thread.sleep(100);
