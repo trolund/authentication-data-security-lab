@@ -1,6 +1,7 @@
 package server.services;
 
 import server.services.interfaces.IAuthService;
+import shared.Colors;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,6 +35,8 @@ public class RBACService implements IAuthService {
 
         loadUserRoles();
         loadRoleCapabilities();
+
+        System.out.println(Colors.ANSI_GREEN + "Loaded roles from file" + Colors.ANSI_RESET);
     }
 
     private void loadUserRoles() {

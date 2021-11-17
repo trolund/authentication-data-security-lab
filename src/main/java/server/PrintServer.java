@@ -49,7 +49,6 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
         printers = new ArrayList<>();
 
         authService = setupAuthService();
-        authService.load();
 
         setupPrinters();
 
@@ -120,7 +119,7 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
         }
 
         isStarted = true;
-        setupAuthService();
+        authService.load();
         serverLog("startet print server", u.getUserId());
     }
 
@@ -158,7 +157,7 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
             resetQueues();
             Thread.sleep(2000);
             isStarted = true;
-            setupAuthService();
+            authService.load();
             serverLog("Printer have restarted.", u.getUserId());
         } catch (InterruptedException e) {
             e.printStackTrace();

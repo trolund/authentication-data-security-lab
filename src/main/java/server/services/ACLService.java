@@ -1,6 +1,7 @@
 package server.services;
 
 import server.services.interfaces.IAuthService;
+import shared.Colors;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -19,6 +20,7 @@ public class ACLService implements IAuthService {
     @Override
     public void load(){
         loadPolicies();
+        System.out.println(Colors.ANSI_GREEN + "Loaded policies from file" + Colors.ANSI_RESET);
     }
 
     private void loadPolicies(){
