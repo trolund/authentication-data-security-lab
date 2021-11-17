@@ -1,6 +1,5 @@
 Names;print;queue;topQueue;start;stop;restart;status;readConfig;setConfig
 alice;1;1;1;1;1;1;1;1;1
-bob;0;0;0;1;1;1;1;1;1
 cecilia;1;1;1;0;0;1;0;0;0
 david;1;1;0;0;0;0;0;0;0
 erica;1;1;0;0;0;0;0;0;0
