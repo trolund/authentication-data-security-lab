@@ -24,7 +24,7 @@ The policy can be chosen on application start, by given speicyfing the policy as
 # Users
 You can use the following user to log into the system, they have the roles defined in the assignment.
 
-| UserId  | FirstName | LastName | Password    |
+| UserId (username)  | FirstName | LastName | Password    |
 | ------- | --------- | -------- | ----------- |
 | alice   | Alice     | Doe      | Password123 |
 | bob     | Bob       | Doe      | Password123 |
@@ -33,3 +33,5 @@ You can use the following user to log into the system, they have the roles defin
 | erica   | Erica     | Doe      | Password123 |
 | fred    | Fred      | Doe      | Password123 |
 | george  | George    | Doe      | Password123 |
+| henry   | Henry     | Doe      | Password123 |
+| ida     | Ida       | Doe      | Password123 |

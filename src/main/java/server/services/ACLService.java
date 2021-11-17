@@ -62,7 +62,7 @@ public class ACLService implements IAuthService {
     @Override
     public boolean haveAccess(String username, String action) {
         var list = userActionRights.get(username);
-        if (list.contains(action)){
+        if ((list != null) && (list.contains(action))){
             return true;
         } else {
             return false;
