@@ -25,7 +25,6 @@ public class RBACService implements IAuthService {
      */
     public RBACService(String path) {
         this.path = path;
-        load();
     }
 
     @Override

@@ -49,6 +49,7 @@ public class PrintServer extends UnicastRemoteObject implements IPrintServer {
         printers = new ArrayList<>();
 
         authService = setupAuthService();
+        authService.load();
 
         setupPrinters();
 
